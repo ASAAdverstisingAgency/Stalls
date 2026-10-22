@@ -66,7 +66,7 @@ export const DEFAULT_CONFIG: StallConfig = {
   socketHeightY: 450, // 450 mm above floor
 
   showDimensions: true,
-  showFurnitureDimensions: false,
+  showFurnitureDimensions: true,
   dimensionUnit: 'ft',
 };
 

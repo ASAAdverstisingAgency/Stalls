@@ -733,7 +733,7 @@ export class StallBuilder {
     const D = 0.580;
     const H = 0.750;
 
-    // Table length along X
+    // Table length along X: 1065 mm -> 3.49 ft
     const p1 = new THREE.Vector3(tx - L / 2, H, tz + D / 2);
     const p2 = new THREE.Vector3(tx + L / 2, H, tz + D / 2);
     const lengthDim = createDimensionLine(
@@ -741,12 +741,12 @@ export class StallBuilder {
       p2,
       new THREE.Vector3(0, 0, 1),
       0.18,
-      `L: ${formatMeasurement(1065, unit)}`,
+      unit === 'ft' ? 'Length: 3.49 ft' : 'Length: 1065 mm',
       0xe11d48 // rose accent for furniture
     );
     dimGroup.add(lengthDim);
 
-    // Table depth along Z
+    // Table depth/breadth along Z: 580 mm -> 1.90 ft
     const pd1 = new THREE.Vector3(tx + L / 2, H, tz + D / 2);
     const pd2 = new THREE.Vector3(tx + L / 2, H, tz - D / 2);
     const depthDim = createDimensionLine(
@@ -754,12 +754,12 @@ export class StallBuilder {
       pd2,
       new THREE.Vector3(1, 0, 0),
       0.18,
-      `D: ${formatMeasurement(580, unit)}`,
+      unit === 'ft' ? 'Breadth: 1.90 ft' : 'Breadth: 580 mm',
       0xe11d48
     );
     dimGroup.add(depthDim);
 
-    // Table height along Y
+    // Table height along Y: 750 mm -> 2.46 ft
     const ph1 = new THREE.Vector3(tx - L / 2, 0, tz - D / 2);
     const ph2 = new THREE.Vector3(tx - L / 2, H, tz - D / 2);
     const heightDim = createDimensionLine(
@@ -767,7 +767,7 @@ export class StallBuilder {
       ph2,
       new THREE.Vector3(-1, 0, 0),
       0.18,
-      `H: ${formatMeasurement(750, unit)}`,
+      unit === 'ft' ? 'Height: 2.46 ft' : 'Height: 750 mm',
       0xe11d48
     );
     dimGroup.add(heightDim);

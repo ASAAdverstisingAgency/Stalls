@@ -93,7 +93,7 @@ export const SpecificationModal: React.FC<Props> = ({ config, previewImageUrl, o
               <div className="flex flex-col sm:flex-row justify-between p-2.5 gap-1 sm:gap-0">
                 <span className="font-medium text-slate-600">Octanorm Display Table</span>
                 <span className="font-semibold text-slate-900 text-right sm:text-left">
-                  {config.showTable ? '1x (3.5 L × 1.9 D × 2.5 H ft, White Top & Silver Edging)' : 'None'}
+                  {config.showTable ? '1x (Length: 3.49 ft, Breadth: 1.90 ft, Height: 2.46 ft)' : 'None'}
                 </span>
               </div>
               <div className="flex flex-col sm:flex-row justify-between p-2.5 bg-slate-50/50 gap-1 sm:gap-0">
@@ -133,6 +133,30 @@ export const SpecificationModal: React.FC<Props> = ({ config, previewImageUrl, o
                 <span className="font-semibold text-slate-900 text-right sm:text-left">{panel} (Rear, Left, Right partitions)</span>
               </div>
             </div>
+
+            {/* Dedicated Table Dimensions breakdown (Length, Breadth, Height) */}
+            {config.showTable && (
+              <div className="bg-slate-900 text-white rounded-xl p-3 sm:p-3.5 space-y-2.5 shadow-sm border border-slate-800">
+                <div className="flex items-center justify-between pb-1.5 border-b border-slate-800 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                  <span>Dimension</span>
+                  <span className="text-right">Feet</span>
+                </div>
+                <div className="space-y-1.5 text-xs sm:text-sm divide-y divide-slate-800/60 font-medium">
+                  <div className="flex justify-between items-center pt-1">
+                    <span className="text-slate-200">Length</span>
+                    <span className="font-mono font-bold text-sky-400">3.49 ft</span>
+                  </div>
+                  <div className="flex justify-between items-center pt-1.5">
+                    <span className="text-slate-200">Breadth</span>
+                    <span className="font-mono font-bold text-sky-400">1.90 ft</span>
+                  </div>
+                  <div className="flex justify-between items-center pt-1.5">
+                    <span className="text-slate-200">Height</span>
+                    <span className="font-mono font-bold text-sky-400">2.46 ft</span>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           <p className="text-[10px] sm:text-[11px] text-slate-400 italic">
