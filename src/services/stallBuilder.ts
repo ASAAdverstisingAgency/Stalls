@@ -191,8 +191,8 @@ export class StallBuilder {
         root.add(chair2);
       }
 
-      // Furniture dimension annotation if enabled
-      if (this.config.showFurnitureDimensions) {
+      // Furniture dimension annotation if enabled (or whenever stall dimensions are toggled on)
+      if (this.config.showFurnitureDimensions || this.config.showDimensions) {
         const furnDimGroup = this.buildFurnitureDimensions(tableX, tableZ);
         root.add(furnDimGroup);
       }
@@ -733,40 +733,40 @@ export class StallBuilder {
     const D = 0.580;
     const H = 0.750;
 
-    // Table length along X: 1065 mm -> 3.49 ft
+    // Table length along X: 1065 mm -> 3.49 ft (front of table)
     const p1 = new THREE.Vector3(tx - L / 2, H, tz + D / 2);
     const p2 = new THREE.Vector3(tx + L / 2, H, tz + D / 2);
     const lengthDim = createDimensionLine(
       p1,
       p2,
       new THREE.Vector3(0, 0, 1),
-      0.18,
+      0.30, // 30cm outward toward viewer
       unit === 'ft' ? 'Length: 3.49 ft' : 'Length: 1065 mm',
-      0xe11d48 // rose accent for furniture
+      0xe11d48 // vibrant rose red for table
     );
     dimGroup.add(lengthDim);
 
-    // Table depth/breadth along Z: 580 mm -> 1.90 ft
+    // Table depth/breadth along Z: 580 mm -> 1.90 ft (right side of table)
     const pd1 = new THREE.Vector3(tx + L / 2, H, tz + D / 2);
     const pd2 = new THREE.Vector3(tx + L / 2, H, tz - D / 2);
     const depthDim = createDimensionLine(
       pd1,
       pd2,
       new THREE.Vector3(1, 0, 0),
-      0.18,
+      0.30, // 30cm rightward
       unit === 'ft' ? 'Breadth: 1.90 ft' : 'Breadth: 580 mm',
       0xe11d48
     );
     dimGroup.add(depthDim);
 
-    // Table height along Y: 750 mm -> 2.46 ft
-    const ph1 = new THREE.Vector3(tx - L / 2, 0, tz - D / 2);
-    const ph2 = new THREE.Vector3(tx - L / 2, H, tz - D / 2);
+    // Table height along Y: 750 mm -> 2.46 ft (left side of table)
+    const ph1 = new THREE.Vector3(tx - L / 2, 0, tz + D / 2);
+    const ph2 = new THREE.Vector3(tx - L / 2, H, tz + D / 2);
     const heightDim = createDimensionLine(
       ph1,
       ph2,
       new THREE.Vector3(-1, 0, 0),
-      0.18,
+      0.28, // 28cm leftward
       unit === 'ft' ? 'Height: 2.46 ft' : 'Height: 750 mm',
       0xe11d48
     );

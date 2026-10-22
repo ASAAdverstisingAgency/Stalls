@@ -24,49 +24,56 @@ export function createDimensionLine(
 
   const lineMat = new THREE.LineBasicMaterial({
     color: color,
-    linewidth: 2,
+    linewidth: 3,
     transparent: true,
-    opacity: 0.9,
+    opacity: 0.95,
     depthTest: false,
+    depthWrite: false,
   });
 
   // Extension line 1 (from start to p1 + small overshoot)
   const ext1End = p1.clone().add(normOffset.clone().normalize().multiplyScalar(0.08));
   const ext1Geo = new THREE.BufferGeometry().setFromPoints([start, ext1End]);
   const ext1 = new THREE.Line(ext1Geo, lineMat);
+  ext1.renderOrder = 9999;
   group.add(ext1);
 
   // Extension line 2 (from end to p2 + small overshoot)
   const ext2End = p2.clone().add(normOffset.clone().normalize().multiplyScalar(0.08));
   const ext2Geo = new THREE.BufferGeometry().setFromPoints([end, ext2End]);
   const ext2 = new THREE.Line(ext2Geo, lineMat);
+  ext2.renderOrder = 9999;
   group.add(ext2);
 
   // Main dimension line between p1 and p2
   const mainLineGeo = new THREE.BufferGeometry().setFromPoints([p1, p2]);
   const mainLine = new THREE.Line(mainLineGeo, lineMat);
+  mainLine.renderOrder = 9999;
   group.add(mainLine);
 
   // Arrowheads at p1 and p2
   const dirP1ToP2 = p2.clone().sub(p1).normalize();
   const dirP2ToP1 = dirP1ToP2.clone().negate();
 
-  const arrowConeGeo = new THREE.ConeGeometry(0.025, 0.08, 12);
-  arrowConeGeo.translate(0, -0.04, 0); // apex at origin
+  const arrowConeGeo = new THREE.ConeGeometry(0.03, 0.09, 12);
+  arrowConeGeo.translate(0, -0.045, 0); // apex at origin
 
   const arrowMat = new THREE.MeshBasicMaterial({
     color: color,
     depthTest: false,
+    depthWrite: false,
   });
 
   const arrow1 = new THREE.Mesh(arrowConeGeo, arrowMat);
   arrow1.position.copy(p1);
   arrow1.quaternion.setFromUnitVectors(new THREE.Vector3(0, -1, 0), dirP1ToP2);
+  arrow1.renderOrder = 9999;
   group.add(arrow1);
 
   const arrow2 = new THREE.Mesh(arrowConeGeo, arrowMat);
   arrow2.position.copy(p2);
   arrow2.quaternion.setFromUnitVectors(new THREE.Vector3(0, -1, 0), dirP2ToP1);
+  arrow2.renderOrder = 9999;
   group.add(arrow2);
 
   // Text label sprite
@@ -76,21 +83,21 @@ export function createDimensionLine(
   const ctx = canvas.getContext('2d');
   if (ctx) {
     // Background pill badge
-    ctx.fillStyle = 'rgba(15, 23, 42, 0.90)';
-    roundRect(ctx, 16, 20, 408, 88, 22);
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.92)';
+    roundRect(ctx, 12, 18, 416, 92, 22);
     ctx.fill();
 
     // Border
-    ctx.strokeStyle = '#38bdf8';
-    ctx.lineWidth = 4;
-    roundRect(ctx, 16, 20, 408, 88, 22);
+    ctx.strokeStyle = color === 0xe11d48 ? '#f43f5e' : '#38bdf8';
+    ctx.lineWidth = 5;
+    roundRect(ctx, 12, 18, 416, 92, 22);
     ctx.stroke();
 
     // Text
-    ctx.font = 'bold 34px "Segoe UI", Roboto, sans-serif';
+    ctx.font = 'bold 36px "Segoe UI", Roboto, sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillStyle = '#f8fafc';
+    ctx.fillStyle = '#ffffff';
     ctx.fillText(label, 220, 64);
   }
 
@@ -99,19 +106,21 @@ export function createDimensionLine(
   const spriteMat = new THREE.SpriteMaterial({
     map: texture,
     depthTest: false,
+    depthWrite: false,
     transparent: true,
   });
 
   const sprite = new THREE.Sprite(spriteMat);
   const midPoint = p1.clone().add(p2).multiplyScalar(0.5);
   // slightly offset text above line
-  const textOffset = normOffset.clone().normalize().multiplyScalar(0.06);
+  const textOffset = normOffset.clone().normalize().multiplyScalar(0.08);
   sprite.position.copy(midPoint.add(textOffset));
-  sprite.scale.set(0.55, 0.16, 1);
+  sprite.scale.set(0.60, 0.175, 1);
+  sprite.renderOrder = 10000;
   group.add(sprite);
 
   // Render on top
-  group.renderOrder = 999;
+  group.renderOrder = 9999;
   return group;
 }
 

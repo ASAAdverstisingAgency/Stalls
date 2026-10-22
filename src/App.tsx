@@ -16,7 +16,12 @@ function getInitialConfig(): StallConfig {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
-      return { ...DEFAULT_CONFIG, ...JSON.parse(saved) };
+      const parsed = JSON.parse(saved);
+      return {
+        ...DEFAULT_CONFIG,
+        ...parsed,
+        showFurnitureDimensions: parsed.showFurnitureDimensions ?? true,
+      };
     }
   } catch (err) {
     console.error('Failed to load saved config:', err);
