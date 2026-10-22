@@ -679,19 +679,7 @@ export class StallBuilder {
     );
     dimGroup.add(frontWidthDim);
 
-    // 2. Rear Width: from (w/2, 0, -d/2) to (-w/2, 0, -d/2) - Clearly visible from Rear view
-    const rearStart = new THREE.Vector3(w / 2, 0.02, -d / 2);
-    const rearEnd = new THREE.Vector3(-w / 2, 0.02, -d / 2);
-    const rearWidthDim = createDimensionLine(
-      rearStart,
-      rearEnd,
-      new THREE.Vector3(0, 0, -1),
-      0.35,
-      `W: ${formatMeasurement(this.config.width, unit)}`
-    );
-    dimGroup.add(rearWidthDim);
-
-    // 3. Side Depth: from (w/2, 0, d/2) to (w/2, 0, -d/2)
+    // 2. Side Depth: from (w/2, 0, d/2) to (w/2, 0, -d/2)
     const sideStart = new THREE.Vector3(w / 2, 0.02, d / 2);
     const sideEnd = new THREE.Vector3(w / 2, 0.02, -d / 2);
     const sideDepthDim = createDimensionLine(
@@ -703,7 +691,7 @@ export class StallBuilder {
     );
     dimGroup.add(sideDepthDim);
 
-    // 4. Overall Height (Front-Left): from (-w/2, 0, d/2) to (-w/2, h, d/2)
+    // 3. Overall Height: from (-w/2, 0, d/2) to (-w/2, h, d/2)
     const heightStart = new THREE.Vector3(-w / 2, 0, d / 2);
     const heightEnd = new THREE.Vector3(-w / 2, h, d / 2);
     const heightDim = createDimensionLine(
@@ -715,19 +703,7 @@ export class StallBuilder {
     );
     dimGroup.add(heightDim);
 
-    // 5. Overall Height (Rear-Left): from (-w/2, 0, -d/2) to (-w/2, h, -d/2) - Visible from back
-    const rearHeightStart = new THREE.Vector3(-w / 2, 0, -d / 2);
-    const rearHeightEnd = new THREE.Vector3(-w / 2, h, -d / 2);
-    const rearHeightDim = createDimensionLine(
-      rearHeightStart,
-      rearHeightEnd,
-      new THREE.Vector3(-1, 0, 0),
-      0.35,
-      `H: ${formatMeasurement(this.config.height, unit)}`
-    );
-    dimGroup.add(rearHeightDim);
-
-    // 6. Fascia Height: from (w/2, h - fH, d/2) to (w/2, h, d/2)
+    // 4. Fascia Height: from (w/2, h - fH, d/2) to (w/2, h, d/2)
     const fasciaStart = new THREE.Vector3(w / 2, h - fH, d / 2);
     const fasciaEnd = new THREE.Vector3(w / 2, h, d / 2);
     const fasciaDim = createDimensionLine(
@@ -738,6 +714,30 @@ export class StallBuilder {
       `Fascia: ${formatMeasurement(this.config.fasciaHeight, unit)}`
     );
     dimGroup.add(fasciaDim);
+
+    // 5. Rear Elevation Width: from (w/2, 0, -d/2) to (-w/2, 0, -d/2) (visible from back view)
+    const rearStart = new THREE.Vector3(w / 2, 0.02, -d / 2);
+    const rearEnd = new THREE.Vector3(-w / 2, 0.02, -d / 2);
+    const rearWidthDim = createDimensionLine(
+      rearStart,
+      rearEnd,
+      new THREE.Vector3(0, 0, -1),
+      0.35,
+      `W: ${formatMeasurement(this.config.width, unit)}`
+    );
+    dimGroup.add(rearWidthDim);
+
+    // 6. Rear Elevation Height: from (w/2, 0, -d/2) to (w/2, h, -d/2) (visible from back view)
+    const rearHeightStart = new THREE.Vector3(w / 2, 0, -d / 2);
+    const rearHeightEnd = new THREE.Vector3(w / 2, h, -d / 2);
+    const rearHeightDim = createDimensionLine(
+      rearHeightStart,
+      rearHeightEnd,
+      new THREE.Vector3(1, 0, 0),
+      0.35,
+      `H: ${formatMeasurement(this.config.height, unit)}`
+    );
+    dimGroup.add(rearHeightDim);
 
     return dimGroup;
   }
