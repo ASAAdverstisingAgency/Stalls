@@ -12,6 +12,8 @@ import {
   Armchair,
   FileSpreadsheet,
   Upload,
+  Save,
+  CheckCircle,
 } from 'lucide-react';
 
 interface Props {
@@ -20,6 +22,7 @@ interface Props {
   onOpenSpecsModal: () => void;
   isCollapsed: boolean;
   onToggleCollapse: () => void;
+  onSaveToClient: () => void;
 }
 
 export const ConfigurationPanel: React.FC<Props> = ({
@@ -28,8 +31,16 @@ export const ConfigurationPanel: React.FC<Props> = ({
   onOpenSpecsModal,
   isCollapsed,
   onToggleCollapse,
+  onSaveToClient,
 }) => {
+  const [saveFeedback, setSaveFeedback] = React.useState<boolean>(false);
   const logoInputRef = useRef<HTMLInputElement>(null);
+
+  const handleSaveClick = () => {
+    onSaveToClient();
+    setSaveFeedback(true);
+    setTimeout(() => setSaveFeedback(false), 2500);
+  };
 
   const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -67,22 +78,54 @@ export const ConfigurationPanel: React.FC<Props> = ({
           </div>
         </div>
 
-        <button
-          onClick={onToggleCollapse}
-          title={isCollapsed ? 'Expand panel' : 'Collapse panel'}
-          className="p-1.5 rounded-lg hover:bg-slate-200/70 text-slate-600 transition cursor-pointer"
-        >
-          {isCollapsed ? (
-            <ChevronUp className="w-4 h-4 md:rotate-90" />
-          ) : (
-            <ChevronDown className="w-4 h-4 md:-rotate-90" />
-          )}
-        </button>
+        <div className="flex items-center gap-2">
+          {/* Quick Header Save Button */}
+          <button
+            onClick={handleSaveClick}
+            title="Save changes to publish to client view"
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition shadow-xs cursor-pointer ${
+              saveFeedback
+                ? 'bg-emerald-600 text-white'
+                : 'bg-sky-600 hover:bg-sky-700 text-white active:scale-95'
+            }`}
+          >
+            {saveFeedback ? (
+              <>
+                <CheckCircle className="w-3.5 h-3.5" />
+                <span>Saved!</span>
+              </>
+            ) : (
+              <>
+                <Save className="w-3.5 h-3.5" />
+                <span>Save for Clients</span>
+              </>
+            )}
+          </button>
+
+          <button
+            onClick={onToggleCollapse}
+            title={isCollapsed ? 'Expand panel' : 'Collapse panel'}
+            className="p-1.5 rounded-lg hover:bg-slate-200/70 text-slate-600 transition cursor-pointer"
+          >
+            {isCollapsed ? (
+              <ChevronUp className="w-4 h-4 md:rotate-90" />
+            ) : (
+              <ChevronDown className="w-4 h-4 md:-rotate-90" />
+            )}
+          </button>
+        </div>
       </div>
 
       {/* Main Controls Scrollable Content */}
       {!isCollapsed && (
         <div className="flex-1 overflow-y-auto p-4 space-y-6 text-xs text-slate-700 pb-28 md:pb-8">
+          {/* Save Status Notification Banner */}
+          {saveFeedback && (
+            <div className="bg-emerald-50 border border-emerald-300 text-emerald-800 p-2.5 rounded-xl flex items-center gap-2 text-xs font-semibold animate-fade-in shadow-xs">
+              <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
+              <span>Published successfully! All client visits and tabs will load this exact configuration.</span>
+            </div>
+          )}
           {/* 1. Stall Dimensions */}
           <section className="space-y-3 bg-slate-50/60 p-3 rounded-xl border border-slate-200/60">
             <div className="flex items-center justify-between border-b border-slate-200/80 pb-1.5">
@@ -484,11 +527,32 @@ export const ConfigurationPanel: React.FC<Props> = ({
             </div>
           </section>
 
-          {/* Quick Specifications Modal Button */}
-          <div className="pt-1">
+          {/* Action Buttons: Save to Client & Specs Modal */}
+          <div className="pt-2 space-y-2">
+            <button
+              onClick={handleSaveClick}
+              className={`w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-white font-bold text-xs shadow-lg transition active:scale-95 cursor-pointer ${
+                saveFeedback
+                  ? 'bg-emerald-600 ring-2 ring-emerald-300'
+                  : 'bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500'
+              }`}
+            >
+              {saveFeedback ? (
+                <>
+                  <CheckCircle className="w-4 h-4" />
+                  <span>Changes Published to Client Panel!</span>
+                </>
+              ) : (
+                <>
+                  <Save className="w-4 h-4" />
+                  <span>Save Changes for Client View</span>
+                </>
+              )}
+            </button>
+
             <button
               onClick={onOpenSpecsModal}
-              className="w-full flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs shadow-md transition cursor-pointer"
+              className="w-full flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs shadow-md transition cursor-pointer"
             >
               <FileSpreadsheet className="w-4 h-4 text-sky-400" />
               <span>Generate Client Specification</span>

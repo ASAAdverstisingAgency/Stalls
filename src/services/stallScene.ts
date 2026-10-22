@@ -108,7 +108,7 @@ export class StallScene {
   }
 
   private setupStudioEnvironment() {
-    // Large circular studio podium
+    // Large circular studio podium placed cleanly below ground level
     const podiumGeo = new THREE.CylinderGeometry(6, 6.2, 0.05, 64);
     const podiumMat = new THREE.MeshStandardMaterial({
       color: 0xe2e8f0,
@@ -116,13 +116,13 @@ export class StallScene {
       metalness: 0.05,
     });
     const podium = new THREE.Mesh(podiumGeo, podiumMat);
-    podium.position.set(0, -0.026, 0);
+    podium.position.set(0, -0.03, 0);
     podium.receiveShadow = true;
     this.scene.add(podium);
 
-    // Subtle technical grid placed with clear vertical separation to avoid z-fighting
+    // Subtle technical ground grid resting safely below the stall carpet
     const gridHelper = new THREE.GridHelper(10, 20, 0x94a3b8, 0xcbd5e1);
-    gridHelper.position.set(0, 0.001, 0);
+    gridHelper.position.set(0, -0.004, 0);
     this.scene.add(gridHelper);
   }
 

@@ -64,19 +64,19 @@ export class StallBuilder {
     const h = this.config.height / 1000;
     const fH = this.config.fasciaHeight / 1000;
 
-    // 1. Carpet Floor (origin at bottom center: x in [-w/2, w/2], z in [-d/2, d/2], y=0)
-    const carpetGeo = new THREE.BoxGeometry(w, 0.02, d);
+    // 1. Carpet Floor (elevated cleanly above ground at y = 0.012)
+    const carpetGeo = new THREE.BoxGeometry(w, 0.024, d);
     const carpet = new THREE.Mesh(carpetGeo, this.carpetMat);
-    carpet.position.set(0, 0.01, 0);
+    carpet.position.set(0, 0.012, 0);
     carpet.receiveShadow = true;
     carpet.name = 'CarpetFloor';
     root.add(carpet);
 
-    // Carpet subtle border edge trim (aluminium edge binder)
-    const edgeTrimGeo = new THREE.BoxGeometry(w + 0.04, 0.022, d + 0.04);
+    // Carpet subtle border edge trim (aluminium edge binder snugly framing perimeter)
+    const edgeTrimGeo = new THREE.BoxGeometry(w + 0.03, 0.022, d + 0.03);
     const edgeTrimMat = new THREE.MeshStandardMaterial({ color: 0x94a3b8, metalness: 0.8, roughness: 0.3 });
     const edgeTrim = new THREE.Mesh(edgeTrimGeo, edgeTrimMat);
-    edgeTrim.position.set(0, 0.009, 0);
+    edgeTrim.position.set(0, 0.011, 0);
     root.add(edgeTrim);
 
     // 2. Octanorm Modular Frame & Panels

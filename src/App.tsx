@@ -322,6 +322,14 @@ export const App: React.FC = () => {
             onOpenSpecsModal={handleOpenSpecs}
             isCollapsed={isPanelCollapsed}
             onToggleCollapse={() => setIsPanelCollapsed(!isPanelCollapsed)}
+            onSaveToClient={() => {
+              try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
+                channelRef.current?.postMessage(config);
+              } catch (err) {
+                console.error('Failed to save config for clients:', err);
+              }
+            }}
           />
         )}
       </div>
