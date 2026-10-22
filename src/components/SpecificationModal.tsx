@@ -59,24 +59,17 @@ export const SpecificationModal: React.FC<Props> = ({ config, previewImageUrl, o
               <span className="font-semibold text-slate-800 text-xs sm:text-sm">
                 {(config.width / 304.8).toFixed(1)} × {(config.depth / 304.8).toFixed(1)} ft
               </span>
-              <span className="text-[10px] text-slate-500 block">
-                ({config.width} × {config.depth} mm)
-              </span>
             </div>
             <div>
               <span className="text-[10px] sm:text-[11px] text-slate-500 uppercase block font-semibold">Total Height</span>
               <span className="font-semibold text-slate-800 text-xs sm:text-sm">
                 {(config.height / 304.8).toFixed(1)} ft
               </span>
-              <span className="text-[10px] text-slate-500 block">({config.height} mm)</span>
             </div>
             <div>
               <span className="text-[10px] sm:text-[11px] text-slate-500 uppercase block font-semibold">Floor Area</span>
               <span className="font-semibold text-slate-800 text-xs sm:text-sm">
                 {(((config.width / 304.8) * (config.depth / 304.8))).toFixed(1)} sq ft
-              </span>
-              <span className="text-[10px] text-slate-500 block">
-                ({((config.width * config.depth) / 1000000).toFixed(1)} m²)
               </span>
             </div>
             <div>
@@ -94,13 +87,13 @@ export const SpecificationModal: React.FC<Props> = ({ config, previewImageUrl, o
               <div className="flex flex-col sm:flex-row justify-between p-2.5 bg-slate-50/50 gap-1 sm:gap-0">
                 <span className="font-medium text-slate-600">Fascia Branding Board</span>
                 <span className="font-semibold text-slate-900 text-right sm:text-left">
-                  {config.brandingText} (Height: {Math.round(config.fasciaHeight)} mm, {config.fasciaType === 'front' ? 'Front 3m' : '3-Sided 9m'})
+                  {config.brandingText} (Height: ~0.75 ft / 9 in, {config.fasciaType === 'front' ? 'Front' : '3-Sided'})
                 </span>
               </div>
               <div className="flex flex-col sm:flex-row justify-between p-2.5 gap-1 sm:gap-0">
                 <span className="font-medium text-slate-600">Octanorm Display Table</span>
                 <span className="font-semibold text-slate-900 text-right sm:text-left">
-                  {config.showTable ? '1x (1065 L × 580 D × 750 H mm, White Top & Silver Edging)' : 'None'}
+                  {config.showTable ? '1x (3.5 L × 1.9 D × 2.5 H ft, White Top & Silver Edging)' : 'None'}
                 </span>
               </div>
               <div className="flex flex-col sm:flex-row justify-between p-2.5 bg-slate-50/50 gap-1 sm:gap-0">

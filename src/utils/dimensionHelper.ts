@@ -123,9 +123,9 @@ export function formatMeasurement(mm: number, unit: 'mm' | 'ft'): string {
   const roundedMm = Math.round(mm);
   if (unit === 'ft') {
     const feet = (mm / 304.8);
-    // Format to 1 or 2 decimals (e.g. 9.84 ft or 9.8 ft)
-    const feetStr = Number.isInteger(feet) ? `${feet} ft` : `${feet.toFixed(2)} ft`;
-    return `${feetStr} (${roundedMm} mm)`;
+    // Display purely in feet: e.g. "9.8 ft" or "10 ft"
+    const feetStr = Number.isInteger(feet) ? `${feet} ft` : `${feet.toFixed(1)} ft`;
+    return feetStr;
   }
   return `${roundedMm} mm`;
 }

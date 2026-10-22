@@ -308,7 +308,8 @@ export class StallBuilder {
       // Optional logo or company tag
       ctx.font = '600 36px "Segoe UI", sans-serif';
       ctx.fillStyle = '#64748b';
-      ctx.fillText('STAND 3000 x 3000 mm', 1024, 200);
+      const standSize = `${(this.config.width / 304.8).toFixed(0)} × ${(this.config.depth / 304.8).toFixed(0)} FT`;
+      ctx.fillText(`OCTANORM STAND ${standSize}`, 1024, 200);
     }
 
     const brandingTexture = new THREE.CanvasTexture(canvas);

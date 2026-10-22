@@ -471,7 +471,9 @@ export const ConfigurationPanel: React.FC<Props> = ({
               </label>
 
               <label className="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-200 cursor-pointer shadow-xs">
-                <span className="font-medium text-slate-800">Table Dimensions (1065×580×750 mm)</span>
+                <span className="font-medium text-slate-800">
+                  Table Dimensions {config.dimensionUnit === 'ft' ? '(3.5 × 1.9 × 2.5 ft)' : '(1065×580×750 mm)'}
+                </span>
                 <input
                   type="checkbox"
                   checked={config.showFurnitureDimensions}
