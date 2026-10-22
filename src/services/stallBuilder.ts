@@ -715,30 +715,6 @@ export class StallBuilder {
     );
     dimGroup.add(fasciaDim);
 
-    // 5. Rear Elevation Width: from (w/2, 0, -d/2) to (-w/2, 0, -d/2) (visible from back view)
-    const rearStart = new THREE.Vector3(w / 2, 0.02, -d / 2);
-    const rearEnd = new THREE.Vector3(-w / 2, 0.02, -d / 2);
-    const rearWidthDim = createDimensionLine(
-      rearStart,
-      rearEnd,
-      new THREE.Vector3(0, 0, -1),
-      0.35,
-      `W: ${formatMeasurement(this.config.width, unit)}`
-    );
-    dimGroup.add(rearWidthDim);
-
-    // 6. Rear Elevation Height: from (w/2, 0, -d/2) to (w/2, h, -d/2) (visible from back view)
-    const rearHeightStart = new THREE.Vector3(w / 2, 0, -d / 2);
-    const rearHeightEnd = new THREE.Vector3(w / 2, h, -d / 2);
-    const rearHeightDim = createDimensionLine(
-      rearHeightStart,
-      rearHeightEnd,
-      new THREE.Vector3(1, 0, 0),
-      0.35,
-      `H: ${formatMeasurement(this.config.height, unit)}`
-    );
-    dimGroup.add(rearHeightDim);
-
     return dimGroup;
   }
 
