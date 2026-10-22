@@ -304,6 +304,8 @@ export const App: React.FC = () => {
             onToggleFullscreen={handleToggleFullscreen}
             showDimensions={config.showDimensions}
             onToggleDimensions={() => handleConfigChange({ showDimensions: !config.showDimensions })}
+            unit={config.dimensionUnit || 'ft'}
+            onToggleUnit={() => handleConfigChange({ dimensionUnit: config.dimensionUnit === 'ft' ? 'mm' : 'ft' })}
           />
         </div>
 

@@ -57,17 +57,26 @@ export const SpecificationModal: React.FC<Props> = ({ config, previewImageUrl, o
             <div>
               <span className="text-[10px] sm:text-[11px] text-slate-500 uppercase block font-semibold">Dimensions</span>
               <span className="font-semibold text-slate-800 text-xs sm:text-sm">
-                {config.width} × {config.depth} mm
+                {(config.width / 304.8).toFixed(1)} × {(config.depth / 304.8).toFixed(1)} ft
+              </span>
+              <span className="text-[10px] text-slate-500 block">
+                ({config.width} × {config.depth} mm)
               </span>
             </div>
             <div>
               <span className="text-[10px] sm:text-[11px] text-slate-500 uppercase block font-semibold">Total Height</span>
-              <span className="font-semibold text-slate-800 text-xs sm:text-sm">{config.height} mm</span>
+              <span className="font-semibold text-slate-800 text-xs sm:text-sm">
+                {(config.height / 304.8).toFixed(1)} ft
+              </span>
+              <span className="text-[10px] text-slate-500 block">({config.height} mm)</span>
             </div>
             <div>
               <span className="text-[10px] sm:text-[11px] text-slate-500 uppercase block font-semibold">Floor Area</span>
               <span className="font-semibold text-slate-800 text-xs sm:text-sm">
-                {((config.width * config.depth) / 1000000).toFixed(1)} m²
+                {(((config.width / 304.8) * (config.depth / 304.8))).toFixed(1)} sq ft
+              </span>
+              <span className="text-[10px] text-slate-500 block">
+                ({((config.width * config.depth) / 1000000).toFixed(1)} m²)
               </span>
             </div>
             <div>

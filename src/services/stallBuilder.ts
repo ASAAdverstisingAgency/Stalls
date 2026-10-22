@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import type { StallConfig } from '../types/config';
 import { COLOR_PALETTES } from '../types/config';
-import { createDimensionLine } from '../utils/dimensionHelper';
+import { createDimensionLine, formatMeasurement } from '../utils/dimensionHelper';
 
 export class StallBuilder {
   private config: StallConfig;
@@ -664,6 +664,8 @@ export class StallBuilder {
     const dimGroup = new THREE.Group();
     dimGroup.name = 'StallDimensionsGroup';
 
+    const unit = this.config.dimensionUnit || 'ft';
+
     // 1. Front Width: from (-w/2, 0, d/2) to (w/2, 0, d/2)
     const frontStart = new THREE.Vector3(-w / 2, 0.02, d / 2);
     const frontEnd = new THREE.Vector3(w / 2, 0.02, d / 2);
@@ -672,7 +674,7 @@ export class StallBuilder {
       frontEnd,
       new THREE.Vector3(0, 0, 1),
       0.35,
-      `${Math.round(this.config.width)} mm`
+      `W: ${formatMeasurement(this.config.width, unit)}`
     );
     dimGroup.add(frontWidthDim);
 
@@ -684,7 +686,7 @@ export class StallBuilder {
       sideEnd,
       new THREE.Vector3(1, 0, 0),
       0.35,
-      `${Math.round(this.config.depth)} mm`
+      `D: ${formatMeasurement(this.config.depth, unit)}`
     );
     dimGroup.add(sideDepthDim);
 
@@ -696,7 +698,7 @@ export class StallBuilder {
       heightEnd,
       new THREE.Vector3(-1, 0, 0),
       0.35,
-      `${Math.round(this.config.height)} mm`
+      `H: ${formatMeasurement(this.config.height, unit)}`
     );
     dimGroup.add(heightDim);
 
@@ -708,7 +710,7 @@ export class StallBuilder {
       fasciaEnd,
       new THREE.Vector3(0, 0, 1),
       0.25,
-      `Fascia ${Math.round(this.config.fasciaHeight)} mm`
+      `Fascia: ${formatMeasurement(this.config.fasciaHeight, unit)}`
     );
     dimGroup.add(fasciaDim);
 
@@ -717,14 +719,15 @@ export class StallBuilder {
 
   /**
    * Furniture Dimensions:
-   * - Table length: 1065 mm
-   * - Table depth: 580 mm
-   * - Table height: 750 mm
+   * - Table length: 1065 mm (~3.5 ft)
+   * - Table depth: 580 mm (~1.9 ft)
+   * - Table height: 750 mm (~2.46 ft)
    */
   private buildFurnitureDimensions(tx: number, tz: number): THREE.Group {
     const dimGroup = new THREE.Group();
     dimGroup.name = 'FurnitureDimensionsGroup';
 
+    const unit = this.config.dimensionUnit || 'ft';
     const L = 1.065;
     const D = 0.580;
     const H = 0.750;
@@ -737,7 +740,7 @@ export class StallBuilder {
       p2,
       new THREE.Vector3(0, 0, 1),
       0.18,
-      'Table Length: 1065 mm',
+      `L: ${formatMeasurement(1065, unit)}`,
       0xe11d48 // rose accent for furniture
     );
     dimGroup.add(lengthDim);
@@ -750,7 +753,7 @@ export class StallBuilder {
       pd2,
       new THREE.Vector3(1, 0, 0),
       0.18,
-      'Depth: 580 mm',
+      `D: ${formatMeasurement(580, unit)}`,
       0xe11d48
     );
     dimGroup.add(depthDim);
@@ -763,7 +766,7 @@ export class StallBuilder {
       ph2,
       new THREE.Vector3(-1, 0, 0),
       0.18,
-      'Height: 750 mm',
+      `H: ${formatMeasurement(750, unit)}`,
       0xe11d48
     );
     dimGroup.add(heightDim);

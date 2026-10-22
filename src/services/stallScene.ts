@@ -30,17 +30,18 @@ export class StallScene {
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(0xf1f5f9); // Clean studio background
 
-    // 2. Camera setup
+    // 2. Camera setup - set near plane to 0.3 to maximize depth buffer precision and prevent z-fighting
     const aspect = container.clientWidth / container.clientHeight;
-    this.camera = new THREE.PerspectiveCamera(45, aspect, 0.1, 100);
+    this.camera = new THREE.PerspectiveCamera(45, aspect, 0.3, 100);
     // Default Isometric presentation position
     this.camera.position.set(4.2, 3.2, 5.0);
 
-    // 3. Renderer setup
+    // 3. Renderer setup with logarithmicDepthBuffer to completely eliminate polygon z-fighting & flickering
     this.renderer = new THREE.WebGLRenderer({
       antialias: true,
       preserveDrawingBuffer: true, // For capturing screenshots / PNG export
       powerPreference: 'high-performance',
+      logarithmicDepthBuffer: true,
     });
     this.renderer.setSize(container.clientWidth, container.clientHeight);
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -119,9 +120,9 @@ export class StallScene {
     podium.receiveShadow = true;
     this.scene.add(podium);
 
-    // Subtle technical grid
+    // Subtle technical grid placed with clear vertical separation to avoid z-fighting
     const gridHelper = new THREE.GridHelper(10, 20, 0x94a3b8, 0xcbd5e1);
-    gridHelper.position.set(0, -0.001, 0);
+    gridHelper.position.set(0, 0.001, 0);
     this.scene.add(gridHelper);
   }
 
@@ -180,7 +181,8 @@ export class StallScene {
         this.camEndTarget.set(0, targetH, 0);
         break;
       case 'top':
-        this.camEndPos.set(0, 6.2, 0.01);
+        // Top view: slight Z offset to prevent Gimbal lock / up vector singularity
+        this.camEndPos.set(0, 6.2, 0.05);
         this.camEndTarget.set(0, 0, 0);
         break;
       case 'isometric':
@@ -218,14 +220,18 @@ export class StallScene {
       if (this.camAnimProgress >= 1) {
         this.camAnimProgress = 1;
         this.isAnimatingCamera = false;
+        this.camera.position.copy(this.camEndPos);
+        this.controls.target.copy(this.camEndTarget);
+      } else {
+        // Ease out cubic
+        const t = 1 - Math.pow(1 - this.camAnimProgress, 3);
+        this.camera.position.lerpVectors(this.camStartPos, this.camEndPos, t);
+        this.controls.target.lerpVectors(this.camStartTarget, this.camEndTarget, t);
       }
-      // Ease out cubic
-      const t = 1 - Math.pow(1 - this.camAnimProgress, 3);
-      this.camera.position.lerpVectors(this.camStartPos, this.camEndPos, t);
-      this.controls.target.lerpVectors(this.camStartTarget, this.camEndTarget, t);
+    } else {
+      this.controls.update();
     }
 
-    this.controls.update();
     this.renderer.render(this.scene, this.camera);
   };
 

@@ -17,6 +17,8 @@ interface Props {
   onToggleFullscreen: () => void;
   showDimensions: boolean;
   onToggleDimensions: () => void;
+  unit: 'mm' | 'ft';
+  onToggleUnit: () => void;
 }
 
 export const BottomToolbar: React.FC<Props> = ({
@@ -27,6 +29,8 @@ export const BottomToolbar: React.FC<Props> = ({
   onToggleFullscreen,
   showDimensions,
   onToggleDimensions,
+  unit,
+  onToggleUnit,
 }) => {
   const presets: { id: CameraPreset; label: string; short: string }[] = [
     { id: 'isometric', label: 'Isometric', short: 'Iso' },
@@ -58,19 +62,31 @@ export const BottomToolbar: React.FC<Props> = ({
 
       {/* Utility Actions */}
       <div className="flex items-center gap-1 pl-1 ml-auto sm:ml-0 shrink-0">
-        {/* Toggle Dimensions */}
-        <button
-          onClick={onToggleDimensions}
-          title="Toggle Dimension Annotations"
-          className={`flex items-center gap-1 px-2 sm:px-2.5 py-1.5 rounded-lg font-medium transition cursor-pointer text-[11px] sm:text-xs ${
-            showDimensions
-              ? 'bg-sky-50 text-sky-700 border border-sky-200'
-              : 'hover:bg-slate-100 text-slate-600'
-          }`}
-        >
-          <Layers className="w-3.5 h-3.5" />
-          <span className="hidden lg:inline">Dimensions</span>
-        </button>
+        {/* Toggle Dimensions & Units */}
+        <div className="flex items-center gap-1">
+          <button
+            onClick={onToggleDimensions}
+            title="Toggle Dimension Annotations"
+            className={`flex items-center gap-1 px-2 sm:px-2.5 py-1.5 rounded-lg font-medium transition cursor-pointer text-[11px] sm:text-xs ${
+              showDimensions
+                ? 'bg-sky-50 text-sky-700 border border-sky-200'
+                : 'hover:bg-slate-100 text-slate-600'
+            }`}
+          >
+            <Layers className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Dimensions</span>
+          </button>
+
+          {showDimensions && (
+            <button
+              onClick={onToggleUnit}
+              title="Toggle Unit: Feet / mm"
+              className="px-2 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-[10px] sm:text-[11px] transition"
+            >
+              {unit === 'ft' ? 'FT' : 'MM'}
+            </button>
+          )}
+        </div>
 
         {/* Reset Camera */}
         <button

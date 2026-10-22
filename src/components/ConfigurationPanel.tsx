@@ -85,13 +85,43 @@ export const ConfigurationPanel: React.FC<Props> = ({
         <div className="flex-1 overflow-y-auto p-4 space-y-6 text-xs text-slate-700 pb-28 md:pb-8">
           {/* 1. Stall Dimensions */}
           <section className="space-y-3 bg-slate-50/60 p-3 rounded-xl border border-slate-200/60">
-            <div className="flex items-center gap-1.5 font-bold text-slate-900 border-b border-slate-200/80 pb-1.5">
-              <Ruler className="w-4 h-4 text-sky-600" />
-              <span>Stall Footprint & Dimensions</span>
+            <div className="flex items-center justify-between border-b border-slate-200/80 pb-1.5">
+              <div className="flex items-center gap-1.5 font-bold text-slate-900">
+                <Ruler className="w-4 h-4 text-sky-600" />
+                <span>Stall Dimensions & Footprint</span>
+              </div>
+              {/* Unit Toggle: Feet vs MM */}
+              <div className="flex items-center bg-slate-200/80 rounded-lg p-0.5 text-[10px] font-bold">
+                <button
+                  type="button"
+                  onClick={() => onChange({ dimensionUnit: 'ft' })}
+                  className={`px-2 py-0.5 rounded-md transition ${
+                    config.dimensionUnit === 'ft'
+                      ? 'bg-sky-600 text-white shadow-xs'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  Feet (ft)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onChange({ dimensionUnit: 'mm' })}
+                  className={`px-2 py-0.5 rounded-md transition ${
+                    config.dimensionUnit === 'mm'
+                      ? 'bg-sky-600 text-white shadow-xs'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  Metric (mm)
+                </button>
+              </div>
             </div>
+
             <div className="grid grid-cols-3 gap-2">
               <div>
-                <label className="text-[10px] sm:text-[11px] text-slate-500 font-semibold">Width (mm)</label>
+                <label className="text-[10px] sm:text-[11px] text-slate-500 font-semibold block">
+                  Width {config.dimensionUnit === 'ft' ? `(${(config.width / 304.8).toFixed(1)} ft)` : '(mm)'}
+                </label>
                 <input
                   type="number"
                   step="100"
@@ -101,9 +131,14 @@ export const ConfigurationPanel: React.FC<Props> = ({
                   onChange={(e) => onChange({ width: Number(e.target.value) })}
                   className="w-full mt-1 px-2.5 py-1.5 bg-white border border-slate-300 rounded text-slate-900 font-mono text-xs focus:ring-2 focus:ring-sky-500 focus:outline-none"
                 />
+                <span className="text-[10px] text-slate-500 font-medium block mt-0.5">
+                  {(config.width / 304.8).toFixed(2)} ft
+                </span>
               </div>
               <div>
-                <label className="text-[10px] sm:text-[11px] text-slate-500 font-semibold">Depth (mm)</label>
+                <label className="text-[10px] sm:text-[11px] text-slate-500 font-semibold block">
+                  Depth {config.dimensionUnit === 'ft' ? `(${(config.depth / 304.8).toFixed(1)} ft)` : '(mm)'}
+                </label>
                 <input
                   type="number"
                   step="100"
@@ -113,9 +148,14 @@ export const ConfigurationPanel: React.FC<Props> = ({
                   onChange={(e) => onChange({ depth: Number(e.target.value) })}
                   className="w-full mt-1 px-2.5 py-1.5 bg-white border border-slate-300 rounded text-slate-900 font-mono text-xs focus:ring-2 focus:ring-sky-500 focus:outline-none"
                 />
+                <span className="text-[10px] text-slate-500 font-medium block mt-0.5">
+                  {(config.depth / 304.8).toFixed(2)} ft
+                </span>
               </div>
               <div>
-                <label className="text-[10px] sm:text-[11px] text-slate-500 font-semibold">Height (mm)</label>
+                <label className="text-[10px] sm:text-[11px] text-slate-500 font-semibold block">
+                  Height {config.dimensionUnit === 'ft' ? `(${(config.height / 304.8).toFixed(1)} ft)` : '(mm)'}
+                </label>
                 <input
                   type="number"
                   step="100"
@@ -125,12 +165,16 @@ export const ConfigurationPanel: React.FC<Props> = ({
                   onChange={(e) => onChange({ height: Number(e.target.value) })}
                   className="w-full mt-1 px-2.5 py-1.5 bg-white border border-slate-300 rounded text-slate-900 font-mono text-xs focus:ring-2 focus:ring-sky-500 focus:outline-none"
                 />
+                <span className="text-[10px] text-slate-500 font-medium block mt-0.5">
+                  {(config.height / 304.8).toFixed(2)} ft
+                </span>
               </div>
             </div>
+
             <div className="text-[11px] text-slate-600 flex justify-between bg-white px-2.5 py-1.5 rounded border border-slate-200">
               <span>Overall Stall Footprint:</span>
               <span className="font-bold text-sky-700">
-                {((config.width * config.depth) / 1000000).toFixed(1)} m²
+                {((config.width * config.depth) / 1000000).toFixed(1)} m² ({(((config.width / 304.8) * (config.depth / 304.8))).toFixed(1)} sq ft)
               </span>
             </div>
           </section>

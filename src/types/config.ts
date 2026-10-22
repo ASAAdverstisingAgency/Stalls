@@ -34,6 +34,7 @@ export interface StallConfig {
   // Annotations
   showDimensions: boolean;
   showFurnitureDimensions: boolean;
+  dimensionUnit: 'mm' | 'ft';
 }
 
 export const DEFAULT_CONFIG: StallConfig = {
@@ -66,6 +67,7 @@ export const DEFAULT_CONFIG: StallConfig = {
 
   showDimensions: true,
   showFurnitureDimensions: false,
+  dimensionUnit: 'ft',
 };
 
 export const COLOR_PALETTES = {

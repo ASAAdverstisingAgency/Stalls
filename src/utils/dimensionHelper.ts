@@ -71,27 +71,27 @@ export function createDimensionLine(
 
   // Text label sprite
   const canvas = document.createElement('canvas');
-  canvas.width = 384;
+  canvas.width = 440;
   canvas.height = 128;
   const ctx = canvas.getContext('2d');
   if (ctx) {
     // Background pill badge
-    ctx.fillStyle = 'rgba(15, 23, 42, 0.88)';
-    roundRect(ctx, 16, 24, 352, 80, 24);
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.90)';
+    roundRect(ctx, 16, 20, 408, 88, 22);
     ctx.fill();
 
     // Border
     ctx.strokeStyle = '#38bdf8';
     ctx.lineWidth = 4;
-    roundRect(ctx, 16, 24, 352, 80, 24);
+    roundRect(ctx, 16, 20, 408, 88, 22);
     ctx.stroke();
 
     // Text
-    ctx.font = 'bold 36px "Segoe UI", Roboto, sans-serif';
+    ctx.font = 'bold 34px "Segoe UI", Roboto, sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillStyle = '#f8fafc';
-    ctx.fillText(label, 192, 64);
+    ctx.fillText(label, 220, 64);
   }
 
   const texture = new THREE.CanvasTexture(canvas);
@@ -107,12 +107,27 @@ export function createDimensionLine(
   // slightly offset text above line
   const textOffset = normOffset.clone().normalize().multiplyScalar(0.06);
   sprite.position.copy(midPoint.add(textOffset));
-  sprite.scale.set(0.48, 0.16, 1);
+  sprite.scale.set(0.55, 0.16, 1);
   group.add(sprite);
 
   // Render on top
   group.renderOrder = 999;
   return group;
+}
+
+/**
+ * Format mm measurement to display string in either feet or mm
+ * e.g. 3000 mm -> "9.84 ft (3000 mm)" or "9.8 ft"
+ */
+export function formatMeasurement(mm: number, unit: 'mm' | 'ft'): string {
+  const roundedMm = Math.round(mm);
+  if (unit === 'ft') {
+    const feet = (mm / 304.8);
+    // Format to 1 or 2 decimals (e.g. 9.84 ft or 9.8 ft)
+    const feetStr = Number.isInteger(feet) ? `${feet} ft` : `${feet.toFixed(2)} ft`;
+    return `${feetStr} (${roundedMm} mm)`;
+  }
+  return `${roundedMm} mm`;
 }
 
 function roundRect(
