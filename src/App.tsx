@@ -236,7 +236,7 @@ export const App: React.FC = () => {
               )}
             </h1>
             <p className="hidden md:block text-[11px] text-slate-500 font-medium">
-              Modular 3 × 3 m System • Height 2.4 m • Interactive 360° Inspection
+              Modular {(config.width / 304.8).toFixed(1)} × {(config.depth / 304.8).toFixed(1)} ft System • Height {(config.height / 304.8).toFixed(1)} ft • Interactive 360° Inspection
             </p>
           </div>
         </div>
@@ -246,13 +246,24 @@ export const App: React.FC = () => {
           <div className="hidden lg:flex items-center gap-2 text-xs bg-slate-50 border border-slate-200 px-3 py-1 rounded-lg text-slate-700">
             <span className="text-slate-400 font-medium">Footprint:</span>
             <span className="font-semibold text-slate-800">
-              {config.width} × {config.depth} mm ({((config.width * config.depth) / 1000000).toFixed(1)} m²)
+              {(config.width / 304.8).toFixed(1)} × {(config.depth / 304.8).toFixed(1)} ft ({(((config.width / 304.8) * (config.depth / 304.8))).toFixed(1)} sq ft)
             </span>
             <span className="text-slate-300">|</span>
             <span className="text-slate-400 font-medium">Fascia:</span>
             <span className="font-semibold text-sky-700">
-              {config.fasciaType === 'front' ? '3000 mm Front' : '9000 mm 3-Sided'}
+              {config.fasciaType === 'front'
+                ? `${(config.width / 304.8).toFixed(1)} ft Front`
+                : `${((config.width * 3) / 304.8).toFixed(1)} ft 3-Sided`}
             </span>
+            {config.showTable && (
+              <>
+                <span className="text-slate-300">|</span>
+                <span className="text-slate-400 font-medium">Table:</span>
+                <span className="font-semibold text-rose-600">
+                  3.49 × 1.90 × 2.46 ft
+                </span>
+              </>
+            )}
           </div>
 
           <button

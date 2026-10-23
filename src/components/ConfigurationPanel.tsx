@@ -217,7 +217,7 @@ export const ConfigurationPanel: React.FC<Props> = ({
             <div className="text-[11px] text-slate-600 flex justify-between bg-white px-2.5 py-1.5 rounded border border-slate-200">
               <span>Overall Stall Footprint:</span>
               <span className="font-bold text-sky-700">
-                {((config.width * config.depth) / 1000000).toFixed(1)} m² ({(((config.width / 304.8) * (config.depth / 304.8))).toFixed(1)} sq ft)
+                {(((config.width / 304.8) * (config.depth / 304.8))).toFixed(1)} sq ft ({((config.width / 304.8)).toFixed(1)} × {((config.depth / 304.8)).toFixed(1)} ft)
               </span>
             </div>
           </section>
@@ -248,12 +248,14 @@ export const ConfigurationPanel: React.FC<Props> = ({
                   onChange={(e) => onChange({ fasciaType: e.target.value as 'front' | 'three-sided' })}
                   className="w-full mt-1 px-2 py-1.5 bg-white border border-slate-300 rounded text-slate-900 text-xs focus:ring-2 focus:ring-sky-500 focus:outline-none"
                 >
-                  <option value="front">Front Only (3000 mm)</option>
-                  <option value="three-sided">3-Sided (9000 mm Total)</option>
+                  <option value="front">Front Only ({(config.width / 304.8).toFixed(1)} ft)</option>
+                  <option value="three-sided">3-Sided ({((config.width * 3) / 304.8).toFixed(1)} ft Total)</option>
                 </select>
               </div>
               <div>
-                <label className="text-[10px] sm:text-[11px] text-slate-500 font-semibold">Fascia Height (mm)</label>
+                <label className="text-[10px] sm:text-[11px] text-slate-500 font-semibold">
+                  Fascia Height ({(config.fasciaHeight / 304.8).toFixed(2)} ft / 9 in)
+                </label>
                 <input
                   type="number"
                   step="1"
@@ -407,7 +409,7 @@ export const ConfigurationPanel: React.FC<Props> = ({
 
             <div className="space-y-2">
               <label className="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-200 cursor-pointer shadow-xs">
-                <span className="font-medium text-slate-800">Octanorm Table (1065 × 580 × 750 mm)</span>
+                <span className="font-medium text-slate-800">Octanorm Table (3.49 × 1.90 × 2.46 ft)</span>
                 <input
                   type="checkbox"
                   checked={config.showTable}
@@ -466,7 +468,7 @@ export const ConfigurationPanel: React.FC<Props> = ({
                 <div>
                   <div className="flex justify-between text-[11px] text-slate-500 mb-1">
                     <span>Lateral (Left - Right)</span>
-                    <span className="font-mono font-semibold text-slate-800">{config.tablePositionX} mm</span>
+                    <span className="font-mono font-semibold text-slate-800">{(config.tablePositionX / 304.8).toFixed(2)} ft</span>
                   </div>
                   <input
                     type="range"
@@ -480,7 +482,7 @@ export const ConfigurationPanel: React.FC<Props> = ({
                 <div>
                   <div className="flex justify-between text-[11px] text-slate-500 mb-1">
                     <span>Depth (Back - Entrance)</span>
-                    <span className="font-mono font-semibold text-slate-800">{config.tablePositionZ} mm</span>
+                    <span className="font-mono font-semibold text-slate-800">{(config.tablePositionZ / 304.8).toFixed(2)} ft</span>
                   </div>
                   <input
                     type="range"
@@ -515,7 +517,7 @@ export const ConfigurationPanel: React.FC<Props> = ({
 
               <label className="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-200 cursor-pointer shadow-xs">
                 <span className="font-medium text-slate-800">
-                  Table Dimensions {config.dimensionUnit === 'ft' ? '(3.5 × 1.9 × 2.5 ft)' : '(1065×580×750 mm)'}
+                  Table Dimensions (3.49 × 1.90 × 2.46 ft)
                 </span>
                 <input
                   type="checkbox"
