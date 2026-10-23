@@ -49,7 +49,7 @@ export const DEFAULT_CONFIG: StallConfig = {
   brandingLogoUrl: null,
   textColor: '#1e293b',
 
-  carpetColor: '#64748b', // neutral grey
+  carpetColor: '#b91c1c', // exhibition red
   frameFinish: 'silver',
   panelFinish: 'white',
 
@@ -72,10 +72,10 @@ export const DEFAULT_CONFIG: StallConfig = {
 
 export const COLOR_PALETTES = {
   carpets: [
+    { id: 'red', label: 'Exhibition Red', hex: '#b91c1c' },
     { id: 'grey', label: 'Neutral Grey', hex: '#64748b' },
     { id: 'charcoal', label: 'Dark Charcoal', hex: '#334155' },
     { id: 'blue', label: 'Royal Blue', hex: '#1d4ed8' },
-    { id: 'red', label: 'Exhibition Red', hex: '#b91c1c' },
   ],
   frames: [
     { id: 'silver', label: 'Anodized Silver', hex: '#d1d5db', roughness: 0.35, metalness: 0.85 },

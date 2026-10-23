@@ -17,9 +17,13 @@ function getInitialConfig(): StallConfig {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
       const parsed = JSON.parse(saved);
+      // Migrate old default grey to red and ensure feet unit
+      const carpetColor = (parsed.carpetColor === '#64748b' || !parsed.carpetColor) ? '#b91c1c' : parsed.carpetColor;
       return {
         ...DEFAULT_CONFIG,
         ...parsed,
+        carpetColor,
+        dimensionUnit: 'ft',
         showFurnitureDimensions: parsed.showFurnitureDimensions ?? true,
       };
     }
