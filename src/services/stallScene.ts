@@ -14,6 +14,7 @@ export class StallScene {
   private stallBuilder: StallBuilder;
   private stallGroup: THREE.Group | null = null;
   private animationFrameId: number | null = null;
+  private currentConfig: StallConfig;
 
   // Smooth camera animation target state
   private isAnimatingCamera = false;
@@ -25,6 +26,7 @@ export class StallScene {
 
   constructor(container: HTMLElement, config: StallConfig) {
     this.container = container;
+    this.currentConfig = config;
 
     // 1. Scene setup
     this.scene = new THREE.Scene();
@@ -127,6 +129,7 @@ export class StallScene {
   }
 
   public updateConfig(config: StallConfig) {
+    this.currentConfig = config;
     this.stallBuilder.updateConfig(config);
     this.buildScene();
   }
@@ -138,6 +141,7 @@ export class StallScene {
     }
     this.stallGroup = this.stallBuilder.buildStall();
     this.scene.add(this.stallGroup);
+    this.updateDimensionVisibility();
   }
 
   private disposeHierarchy(obj: THREE.Object3D) {
@@ -212,6 +216,27 @@ export class StallScene {
     this.renderer.setSize(width, height);
   };
 
+  /**
+   * Show dimension annotations from the front view cone only. The +Z side is
+   * the stall entrance; the rear and side views should not show annotations.
+   */
+  private updateDimensionVisibility() {
+    const cameraOffset = this.camera.position.clone().sub(this.controls.target);
+    const angleFromFront = Math.abs(Math.atan2(cameraOffset.x, cameraOffset.z));
+    const maxFrontAngle = (58 * Math.PI) / 180;
+    const isFrontView = cameraOffset.z > 0.25 && angleFromFront <= maxFrontAngle;
+
+    const stallDimGroup = this.scene.getObjectByName('StallDimensionsGroup');
+    if (stallDimGroup) {
+      stallDimGroup.visible = this.currentConfig.showDimensions && isFrontView;
+    }
+
+    const furnitureDimGroup = this.scene.getObjectByName('FurnitureDimensionsGroup');
+    if (furnitureDimGroup) {
+      furnitureDimGroup.visible = this.currentConfig.showFurnitureDimensions && isFrontView;
+    }
+  }
+
   private animate = () => {
     this.animationFrameId = requestAnimationFrame(this.animate);
 
@@ -231,6 +256,9 @@ export class StallScene {
     } else {
       this.controls.update();
     }
+
+    // Update all dimension visibility based on camera view angle and toggles.
+    this.updateDimensionVisibility();
 
     this.renderer.render(this.scene, this.camera);
   };

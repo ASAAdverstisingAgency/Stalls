@@ -12,7 +12,8 @@ export function createDimensionLine(
   offsetDirection: THREE.Vector3,
   offsetDistance: number,
   label: string,
-  color: number = 0x0284c7 // vibrant technical cyan-blue
+  color: number = 0x0284c7, // vibrant technical cyan-blue
+  depthTest: boolean = true
 ): THREE.Group {
   const group = new THREE.Group();
   group.name = 'DimensionAnnotation';
@@ -27,28 +28,31 @@ export function createDimensionLine(
     linewidth: 3,
     transparent: true,
     opacity: 0.95,
-    depthTest: false,
+    depthTest: depthTest,
     depthWrite: false,
   });
+
+  const baseOrder = depthTest ? 100 : 9999;
+  const spriteOrder = depthTest ? 101 : 10000;
 
   // Extension line 1 (from start to p1 + small overshoot)
   const ext1End = p1.clone().add(normOffset.clone().normalize().multiplyScalar(0.08));
   const ext1Geo = new THREE.BufferGeometry().setFromPoints([start, ext1End]);
   const ext1 = new THREE.Line(ext1Geo, lineMat);
-  ext1.renderOrder = 9999;
+  ext1.renderOrder = baseOrder;
   group.add(ext1);
 
   // Extension line 2 (from end to p2 + small overshoot)
   const ext2End = p2.clone().add(normOffset.clone().normalize().multiplyScalar(0.08));
   const ext2Geo = new THREE.BufferGeometry().setFromPoints([end, ext2End]);
   const ext2 = new THREE.Line(ext2Geo, lineMat);
-  ext2.renderOrder = 9999;
+  ext2.renderOrder = baseOrder;
   group.add(ext2);
 
   // Main dimension line between p1 and p2
   const mainLineGeo = new THREE.BufferGeometry().setFromPoints([p1, p2]);
   const mainLine = new THREE.Line(mainLineGeo, lineMat);
-  mainLine.renderOrder = 9999;
+  mainLine.renderOrder = baseOrder;
   group.add(mainLine);
 
   // Arrowheads at p1 and p2
@@ -60,20 +64,20 @@ export function createDimensionLine(
 
   const arrowMat = new THREE.MeshBasicMaterial({
     color: color,
-    depthTest: false,
+    depthTest: depthTest,
     depthWrite: false,
   });
 
   const arrow1 = new THREE.Mesh(arrowConeGeo, arrowMat);
   arrow1.position.copy(p1);
   arrow1.quaternion.setFromUnitVectors(new THREE.Vector3(0, -1, 0), dirP1ToP2);
-  arrow1.renderOrder = 9999;
+  arrow1.renderOrder = baseOrder;
   group.add(arrow1);
 
   const arrow2 = new THREE.Mesh(arrowConeGeo, arrowMat);
   arrow2.position.copy(p2);
   arrow2.quaternion.setFromUnitVectors(new THREE.Vector3(0, -1, 0), dirP2ToP1);
-  arrow2.renderOrder = 9999;
+  arrow2.renderOrder = baseOrder;
   group.add(arrow2);
 
   // Text label sprite
@@ -83,12 +87,12 @@ export function createDimensionLine(
   const ctx = canvas.getContext('2d');
   if (ctx) {
     // Background pill badge
-    ctx.fillStyle = 'rgba(15, 23, 42, 0.92)';
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.94)';
     roundRect(ctx, 12, 18, 416, 92, 22);
     ctx.fill();
 
     // Border
-    ctx.strokeStyle = color === 0xe11d48 ? '#f43f5e' : '#38bdf8';
+    ctx.strokeStyle = color === 0xfacc15 ? '#facc15' : '#38bdf8';
     ctx.lineWidth = 5;
     roundRect(ctx, 12, 18, 416, 92, 22);
     ctx.stroke();
@@ -105,7 +109,7 @@ export function createDimensionLine(
   texture.minFilter = THREE.LinearFilter;
   const spriteMat = new THREE.SpriteMaterial({
     map: texture,
-    depthTest: false,
+    depthTest: depthTest,
     depthWrite: false,
     transparent: true,
   });
@@ -115,27 +119,32 @@ export function createDimensionLine(
   // slightly offset text above line
   const textOffset = normOffset.clone().normalize().multiplyScalar(0.08);
   sprite.position.copy(midPoint.add(textOffset));
-  sprite.scale.set(0.60, 0.175, 1);
-  sprite.renderOrder = 10000;
+  sprite.scale.set(0.90, 0.26, 1);
+  sprite.renderOrder = spriteOrder;
   group.add(sprite);
 
-  // Render on top
-  group.renderOrder = 9999;
+  // Render order for overall group
+  group.renderOrder = baseOrder;
   return group;
 }
 
 /**
  * Format mm measurement to display string in either feet or mm
- * e.g. 3000 mm -> "9.84 ft (3000 mm)" or "9.8 ft"
+ * e.g. 3000 mm -> "9.8 ft", 228.6 mm -> "0.75 ft", 1065 mm -> "3.49 ft"
  */
 export function formatMeasurement(mm: number, unit: 'mm' | 'ft'): string {
-  const roundedMm = Math.round(mm);
   if (unit === 'ft') {
     const feet = (mm / 304.8);
-    // Display purely in feet: e.g. "9.8 ft" or "10 ft"
-    const feetStr = Number.isInteger(feet) ? `${feet} ft` : `${feet.toFixed(1)} ft`;
-    return feetStr;
+    if (Number.isInteger(feet)) {
+      return `${feet} ft`;
+    }
+    if (feet < 1) {
+      return `${feet.toFixed(2)} ft`;
+    }
+    // For values like 9.84 ft -> 9.8 ft
+    return `${feet.toFixed(1)} ft`;
   }
+  const roundedMm = Math.round(mm);
   return `${roundedMm} mm`;
 }
 

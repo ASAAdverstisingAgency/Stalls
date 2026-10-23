@@ -191,8 +191,8 @@ export class StallBuilder {
         root.add(chair2);
       }
 
-      // Furniture dimension annotation if enabled (or whenever stall dimensions are toggled on)
-      if (this.config.showFurnitureDimensions || this.config.showDimensions) {
+      // Furniture dimension annotations have an independent visibility toggle.
+      if (this.config.showFurnitureDimensions) {
         const furnDimGroup = this.buildFurnitureDimensions(tableX, tableZ);
         root.add(furnDimGroup);
       }
@@ -675,7 +675,9 @@ export class StallBuilder {
       frontEnd,
       new THREE.Vector3(0, 0, 1),
       0.35,
-      `W: ${formatMeasurement(this.config.width, unit)}`
+      `W: ${formatMeasurement(this.config.width, unit)}`,
+      0x0284c7,
+      false
     );
     dimGroup.add(frontWidthDim);
 
@@ -687,7 +689,9 @@ export class StallBuilder {
       sideEnd,
       new THREE.Vector3(1, 0, 0),
       0.35,
-      `D: ${formatMeasurement(this.config.depth, unit)}`
+      `D: ${formatMeasurement(this.config.depth, unit)}`,
+      0x0284c7,
+      false
     );
     dimGroup.add(sideDepthDim);
 
@@ -699,7 +703,9 @@ export class StallBuilder {
       heightEnd,
       new THREE.Vector3(-1, 0, 0),
       0.35,
-      `H: ${formatMeasurement(this.config.height, unit)}`
+      `H: ${formatMeasurement(this.config.height, unit)}`,
+      0x0284c7,
+      false
     );
     dimGroup.add(heightDim);
 
@@ -711,7 +717,9 @@ export class StallBuilder {
       fasciaEnd,
       new THREE.Vector3(0, 0, 1),
       0.25,
-      `Fascia: ${formatMeasurement(this.config.fasciaHeight, unit)}`
+      `Fascia: ${formatMeasurement(this.config.fasciaHeight, unit)}`,
+      0x0284c7,
+      false
     );
     dimGroup.add(fasciaDim);
 
@@ -742,7 +750,8 @@ export class StallBuilder {
       new THREE.Vector3(0, 0, 1),
       0.30, // 30cm outward toward viewer
       unit === 'ft' ? 'Length: 3.49 ft' : 'Length: 1065 mm',
-      0xe11d48 // vibrant rose red for table
+      0xfacc15,
+      false
     );
     dimGroup.add(lengthDim);
 
@@ -755,7 +764,8 @@ export class StallBuilder {
       new THREE.Vector3(1, 0, 0),
       0.30, // 30cm rightward
       unit === 'ft' ? 'Breadth: 1.90 ft' : 'Breadth: 580 mm',
-      0xe11d48
+      0xfacc15,
+      false
     );
     dimGroup.add(depthDim);
 
@@ -768,7 +778,8 @@ export class StallBuilder {
       new THREE.Vector3(-1, 0, 0),
       0.28, // 28cm leftward
       unit === 'ft' ? 'Height: 2.46 ft' : 'Height: 750 mm',
-      0xe11d48
+      0xfacc15,
+      false
     );
     dimGroup.add(heightDim);
 
