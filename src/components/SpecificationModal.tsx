@@ -1,7 +1,14 @@
 import React from 'react';
 import type { StallConfig } from '../types/config';
-import { COLOR_PALETTES } from '../types/config';
-import { X, Printer } from 'lucide-react';
+import { COLOR_PALETTES, STALL_SIZE_PRESETS } from '../types/config';
+import {
+  X,
+  Printer,
+  FileText,
+  Box,
+  ArrowUpDown,
+  Maximize2,
+} from 'lucide-react';
 
 interface Props {
   config: StallConfig;
@@ -9,176 +16,202 @@ interface Props {
   onClose: () => void;
 }
 
-export const SpecificationModal: React.FC<Props> = ({ config, previewImageUrl, onClose }) => {
-  const carpet = COLOR_PALETTES.carpets.find((c) => c.hex === config.carpetColor)?.label || 'Custom';
-  const frame = COLOR_PALETTES.frames.find((f) => f.id === config.frameFinish)?.label || 'Aluminium';
-  const panel = COLOR_PALETTES.panels.find((p) => p.id === config.panelFinish)?.label || 'White Melamine';
+export const SpecificationModal: React.FC<Props> = ({
+  config,
+  previewImageUrl,
+  onClose,
+}) => {
+  const carpet =
+    COLOR_PALETTES.carpets.find((c) => c.hex === config.carpetColor)?.label || 'Custom';
+  const frame =
+    COLOR_PALETTES.frames.find((f) => f.id === config.frameFinish)?.label || 'Aluminium';
+  const sizePreset =
+    STALL_SIZE_PRESETS.find((p) => p.id === config.stallSizeId) ||
+    STALL_SIZE_PRESETS.find(
+      (p) => p.panelColor.toLowerCase() === config.panelColor.toLowerCase()
+    );
+  const panelLabel = sizePreset?.label || 'Custom panels';
+  const widthM = config.width / 1000;
+  const depthM = config.depth / 1000;
+  const heightM = config.height / 1000;
+  const areaM2 = widthM * depthM;
 
   const handlePrint = () => {
     window.print();
   };
 
+  const rows: { component: string; specification: React.ReactNode }[] = [
+    {
+      component: 'Size category',
+      specification: (
+        <span className="spec-swatch-inline">
+          <span className="spec-mini-swatch" style={{ backgroundColor: config.panelColor }} />
+          {panelLabel}
+        </span>
+      ),
+    },
+    {
+      component: 'Fascia branding board',
+      specification: `${config.brandingText} (${config.fasciaType === 'front' ? 'Front' : '3-Sided'})`,
+    },
+    {
+      component: 'Display table',
+      specification: config.showTable ? '1 included' : 'None',
+    },
+    {
+      component: 'Visitor seating',
+      specification: config.showChairs ? '2 exhibition visitor chairs' : 'None',
+    },
+    {
+      component: 'Fascia spotlights',
+      specification: config.showSpotlights
+        ? '3 track/clamp exhibition spotlights (warm white)'
+        : 'None',
+    },
+    {
+      component: 'Electrical socket',
+      specification: config.showSocket
+        ? `1 standard wall-mounted socket (${config.socketWall} wall)`
+        : 'None',
+    },
+    {
+      component: 'Dustbin',
+      specification: config.showDustbin ? '1 black office dustbin' : 'None',
+    },
+    {
+      component: 'Carpet flooring',
+      specification: `${carpet} · ${widthM} × ${depthM} m`,
+    },
+    {
+      component: 'Frame structure',
+      specification: `${frame} aluminium`,
+    },
+    {
+      component: 'Wall panels',
+      specification: `${panelLabel} · ${config.panelColor.toUpperCase()} · Rear, left & right`,
+    },
+  ];
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in">
-      <div className="bg-white rounded-xl sm:rounded-2xl shadow-2xl max-w-2xl w-full max-h-[92vh] sm:max-h-[90vh] overflow-y-auto border border-slate-200">
-        {/* Modal Header */}
-        <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-b border-slate-100 bg-slate-50/50 sticky top-0 bg-white/95 backdrop-blur-sm z-10">
-          <div>
-            <h3 className="text-sm sm:text-base font-semibold text-slate-900">
-              Exhibition Stall Specification Sheet
-            </h3>
-            <p className="text-[10px] sm:text-xs text-slate-500">
-              Preliminary Client Presentation & Bill of Materials
-            </p>
+    <div className="spec-backdrop animate-fade-in" role="dialog" aria-modal="true">
+      <div className="spec-modal modal-print-container">
+        {/* Header */}
+        <div className="spec-header">
+          <div className="spec-header-left">
+            <div className="spec-header-icon">
+              <FileText size={20} strokeWidth={2.2} />
+            </div>
+            <div>
+              <h3 className="spec-title">Stall Specifications</h3>
+              <p className="spec-subtitle">Configuration overview & material breakdown</p>
+            </div>
           </div>
-          <button
-            onClick={onClose}
-            className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 cursor-pointer"
-          >
-            <X className="w-5 h-5" />
+          <button type="button" className="spec-close" onClick={onClose} aria-label="Close">
+            <X size={20} />
           </button>
         </div>
 
-        {/* Modal Body */}
-        <div className="p-4 sm:p-6 space-y-4 sm:space-y-6 text-xs sm:text-sm text-slate-700">
-          {/* Render Preview Image */}
-          {previewImageUrl && (
-            <div className="rounded-xl overflow-hidden border border-slate-200 bg-slate-50">
-              <img
-                src={previewImageUrl}
-                alt="3D Stall Render Preview"
-                className="w-full h-36 sm:h-52 object-contain"
-              />
-            </div>
-          )}
-
-          {/* Project Summary */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 bg-slate-50 p-3 sm:p-3.5 rounded-xl border border-slate-100">
-            <div>
-              <span className="text-[10px] sm:text-[11px] text-slate-500 uppercase block font-semibold">Dimensions</span>
-              <span className="font-semibold text-slate-800 text-xs sm:text-sm">
-                {(config.width / 304.8).toFixed(1)} × {(config.depth / 304.8).toFixed(1)} ft
-              </span>
-            </div>
-            <div>
-              <span className="text-[10px] sm:text-[11px] text-slate-500 uppercase block font-semibold">Total Height</span>
-              <span className="font-semibold text-slate-800 text-xs sm:text-sm">
-                {(config.height / 304.8).toFixed(1)} ft
-              </span>
-            </div>
-            <div>
-              <span className="text-[10px] sm:text-[11px] text-slate-500 uppercase block font-semibold">Floor Area</span>
-              <span className="font-semibold text-slate-800 text-xs sm:text-sm">
-                {(((config.width / 304.8) * (config.depth / 304.8))).toFixed(1)} sq ft
-              </span>
-            </div>
-            <div>
-              <span className="text-[10px] sm:text-[11px] text-slate-500 uppercase block font-semibold">Stall Type</span>
-              <span className="font-semibold text-slate-800 text-xs sm:text-sm">Modular Octanorm</span>
-            </div>
-          </div>
-
-          {/* Specifications Table */}
-          <div className="space-y-2">
-            <h4 className="text-[11px] sm:text-xs font-semibold uppercase tracking-wider text-slate-400">
-              Component & Material Breakdown
-            </h4>
-            <div className="border border-slate-200 rounded-xl overflow-hidden divide-y divide-slate-100 text-[11px] sm:text-xs">
-              <div className="flex flex-col sm:flex-row justify-between p-2.5 bg-slate-50/50 gap-1 sm:gap-0">
-                <span className="font-medium text-slate-600">Fascia Branding Board</span>
-                <span className="font-semibold text-slate-900 text-right sm:text-left">
-                  {config.brandingText} (Height: ~0.75 ft / 9 in, {config.fasciaType === 'front' ? 'Front' : '3-Sided'})
-                </span>
-              </div>
-              <div className="flex flex-col sm:flex-row justify-between p-2.5 gap-1 sm:gap-0">
-                <span className="font-medium text-slate-600">Octanorm Display Table</span>
-                <span className="font-semibold text-slate-900 text-right sm:text-left">
-                  {config.showTable ? '1x (Length: 3.49 ft, Breadth: 1.90 ft, Height: 2.46 ft)' : 'None'}
-                </span>
-              </div>
-              <div className="flex flex-col sm:flex-row justify-between p-2.5 bg-slate-50/50 gap-1 sm:gap-0">
-                <span className="font-medium text-slate-600">Visitor Seating</span>
-                <span className="font-semibold text-slate-900 text-right sm:text-left">
-                  {config.showChairs ? '2x Standard Exhibition Visitor Chairs' : 'None'}
-                </span>
-              </div>
-              <div className="flex flex-col sm:flex-row justify-between p-2.5 gap-1 sm:gap-0">
-                <span className="font-medium text-slate-600">Fascia Spotlights</span>
-                <span className="font-semibold text-slate-900 text-right sm:text-left">
-                  {config.showSpotlights ? '3x Track/Clamp Exhibition Spotlights (Warm White)' : 'None'}
-                </span>
-              </div>
-              <div className="flex flex-col sm:flex-row justify-between p-2.5 bg-slate-50/50 gap-1 sm:gap-0">
-                <span className="font-medium text-slate-600">Electrical Socket</span>
-                <span className="font-semibold text-slate-900 text-right sm:text-left">
-                  {config.showSocket ? `1x Standard Wall-Mounted Socket (${config.socketWall} wall)` : 'None'}
-                </span>
-              </div>
-              <div className="flex flex-col sm:flex-row justify-between p-2.5 gap-1 sm:gap-0">
-                <span className="font-medium text-slate-600">Dustbin</span>
-                <span className="font-semibold text-slate-900 text-right sm:text-left">
-                  {config.showDustbin ? '1x Black Office Dustbin' : 'None'}
-                </span>
-              </div>
-              <div className="flex flex-col sm:flex-row justify-between p-2.5 bg-slate-50/50 gap-1 sm:gap-0">
-                <span className="font-medium text-slate-600">Carpet Flooring</span>
-                <span className="font-semibold text-slate-900 text-right sm:text-left">{carpet} (Full 3 × 3 m Footprint)</span>
-              </div>
-              <div className="flex flex-col sm:flex-row justify-between p-2.5 gap-1 sm:gap-0">
-                <span className="font-medium text-slate-600">Frame Structure</span>
-                <span className="font-semibold text-slate-900 text-right sm:text-left">{frame} Aluminium Extrusions</span>
-              </div>
-              <div className="flex flex-col sm:flex-row justify-between p-2.5 bg-slate-50/50 gap-1 sm:gap-0">
-                <span className="font-medium text-slate-600">Wall Panels</span>
-                <span className="font-semibold text-slate-900 text-right sm:text-left">{panel} (Rear, Left, Right partitions)</span>
-              </div>
+        <div className="spec-body">
+          {/* Preview + summary cards */}
+          <div className="spec-top-grid">
+            <div className="spec-preview">
+              {previewImageUrl ? (
+                <img src={previewImageUrl} alt="3D Stall Render Preview" />
+              ) : (
+                <span className="spec-preview-empty">Preview unavailable</span>
+              )}
             </div>
 
-            {/* Dedicated Table Dimensions breakdown (Length, Breadth, Height) */}
-            {config.showTable && (
-              <div className="bg-slate-900 text-white rounded-xl p-3 sm:p-3.5 space-y-2.5 shadow-sm border border-slate-800">
-                <div className="flex items-center justify-between pb-1.5 border-b border-slate-800 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-                  <span>Dimension</span>
-                  <span className="text-right">Feet</span>
+            <div className="spec-summary">
+              <h4 className="spec-stall-name">
+                {widthM} × {depthM} m · FMCG EXPO 2027
+              </h4>
+              <span className="spec-badge">Modular Octanorm</span>
+
+              <div className="spec-cards">
+                <div className="spec-card">
+                  <div className="spec-card-icon">
+                    <Box size={16} />
+                  </div>
+                  <div>
+                    <div className="spec-card-label">Dimensions</div>
+                    <div className="spec-card-value">
+                      {widthM} × {depthM} m
+                    </div>
+                  </div>
                 </div>
-                <div className="space-y-1.5 text-xs sm:text-sm divide-y divide-slate-800/60 font-medium">
-                  <div className="flex justify-between items-center pt-1">
-                    <span className="text-slate-200">Length</span>
-                    <span className="font-mono font-bold text-sky-400">3.49 ft</span>
+
+                <div className="spec-card">
+                  <div className="spec-card-icon">
+                    <ArrowUpDown size={16} />
                   </div>
-                  <div className="flex justify-between items-center pt-1.5">
-                    <span className="text-slate-200">Breadth</span>
-                    <span className="font-mono font-bold text-sky-400">1.90 ft</span>
+                  <div>
+                    <div className="spec-card-label">Total height</div>
+                    <div className="spec-card-value">{heightM.toFixed(1)} m</div>
                   </div>
-                  <div className="flex justify-between items-center pt-1.5">
-                    <span className="text-slate-200">Height</span>
-                    <span className="font-mono font-bold text-sky-400">2.46 ft</span>
+                </div>
+
+                <div className="spec-card">
+                  <div className="spec-card-icon">
+                    <Maximize2 size={16} />
+                  </div>
+                  <div>
+                    <div className="spec-card-label">Floor area</div>
+                    <div className="spec-card-value">{areaM2.toFixed(0)} m²</div>
+                  </div>
+                </div>
+
+                <div className="spec-card">
+                  <span
+                    className="spec-card-swatch"
+                    style={{ backgroundColor: config.panelColor }}
+                  />
+                  <div>
+                    <div className="spec-card-label">Panel finish</div>
+                    <div className="spec-card-value spec-mono">
+                      {config.panelColor.toUpperCase()}
+                    </div>
                   </div>
                 </div>
               </div>
-            )}
+            </div>
           </div>
 
-          <p className="text-[10px] sm:text-[11px] text-slate-400 italic">
-            Note: This document provides preliminary client presentation specifications. Actual site installation may vary based on venue regulations.
+          {/* Components table */}
+          <div className="spec-table-block">
+            <h4 className="spec-section-title">Components & materials</h4>
+            <div className="spec-table">
+              <div className="spec-table-head">
+                <span>Component</span>
+                <span>Specification</span>
+              </div>
+              {rows.map((row, i) => (
+                <div
+                  key={row.component}
+                  className={`spec-table-row${i % 2 === 1 ? ' is-alt' : ''}`}
+                >
+                  <span className="spec-table-component">{row.component}</span>
+                  <span className="spec-table-value">{row.specification}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Footer: note left, actions right */}
+        <div className="spec-footer">
+          <p className="spec-note">
+            Preliminary specifications. Final installation may vary by venue.
           </p>
-        </div>
-
-        {/* Modal Footer */}
-        <div className="flex items-center justify-end gap-2 sm:gap-3 px-4 sm:px-6 py-3 sm:py-3.5 border-t border-slate-100 bg-slate-50 sticky bottom-0">
-          <button
-            onClick={onClose}
-            className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs font-medium text-slate-600 hover:bg-slate-200 rounded-lg transition cursor-pointer"
-          >
-            Close
-          </button>
-          <button
-            onClick={handlePrint}
-            className="flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 text-xs font-medium bg-sky-600 hover:bg-sky-700 text-white rounded-lg shadow-sm transition cursor-pointer"
-          >
-            <Printer className="w-3.5 h-3.5" />
-            <span>Print Specification</span>
-          </button>
+          <div className="spec-footer-actions">
+            <button type="button" className="spec-btn-secondary" onClick={onClose}>
+              Close
+            </button>
+            <button type="button" className="spec-btn-primary" onClick={handlePrint}>
+              <Printer size={15} />
+              Print Specifications
+            </button>
+          </div>
         </div>
       </div>
     </div>

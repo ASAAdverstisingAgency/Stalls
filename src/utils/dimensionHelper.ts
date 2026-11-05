@@ -129,19 +129,25 @@ export function createDimensionLine(
 }
 
 /**
- * Format mm measurement to display string in either feet or mm
- * e.g. 3000 mm -> "9.8 ft", 228.6 mm -> "0.75 ft", 1065 mm -> "3.49 ft"
+ * Format mm measurement to display string in meters, feet, or mm
+ * e.g. 3000 mm -> "3 m" / "9.8 ft" / "3000 mm"
  */
-export function formatMeasurement(mm: number, unit: 'mm' | 'ft'): string {
+export function formatMeasurement(mm: number, unit: 'mm' | 'ft' | 'm'): string {
+  if (unit === 'm') {
+    const meters = mm / 1000;
+    if (Number.isInteger(meters)) {
+      return `${meters} m`;
+    }
+    return `${meters.toFixed(2)} m`;
+  }
   if (unit === 'ft') {
-    const feet = (mm / 304.8);
+    const feet = mm / 304.8;
     if (Number.isInteger(feet)) {
       return `${feet} ft`;
     }
     if (feet < 1) {
       return `${feet.toFixed(2)} ft`;
     }
-    // For values like 9.84 ft -> 9.8 ft
     return `${feet.toFixed(1)} ft`;
   }
   const roundedMm = Math.round(mm);

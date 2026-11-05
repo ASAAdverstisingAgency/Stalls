@@ -24,7 +24,10 @@ export class StallBuilder {
 
   private initMaterials() {
     const fOpt = COLOR_PALETTES.frames.find((f) => f.id === this.config.frameFinish) || COLOR_PALETTES.frames[0];
-    const pOpt = COLOR_PALETTES.panels.find((p) => p.id === this.config.panelFinish) || COLOR_PALETTES.panels[0];
+    const panelHex =
+      this.config.panelColor ||
+      COLOR_PALETTES.panels.find((p) => p.id === this.config.panelFinish)?.hex ||
+      COLOR_PALETTES.panels[0].hex;
 
     this.frameMat = new THREE.MeshStandardMaterial({
       color: fOpt.hex,
@@ -33,9 +36,9 @@ export class StallBuilder {
     });
 
     this.panelMat = new THREE.MeshStandardMaterial({
-      color: pOpt.hex,
-      roughness: pOpt.roughness,
-      metalness: pOpt.metalness,
+      color: panelHex,
+      roughness: 0.7,
+      metalness: 0.05,
     });
 
     this.carpetMat = new THREE.MeshStandardMaterial({
@@ -308,7 +311,7 @@ export class StallBuilder {
       // Optional logo or company tag
       ctx.font = '600 36px "Segoe UI", sans-serif';
       ctx.fillStyle = '#64748b';
-      const standSize = `${(this.config.width / 304.8).toFixed(0)} × ${(this.config.depth / 304.8).toFixed(0)} FT`;
+      const standSize = `${(this.config.width / 1000).toFixed(0)} × ${(this.config.depth / 1000).toFixed(0)} M`;
       ctx.fillText(`OCTANORM STAND ${standSize}`, 1024, 200);
     }
 
@@ -741,7 +744,14 @@ export class StallBuilder {
     const D = 0.580;
     const H = 0.750;
 
-    // Table length along X: 1065 mm -> 3.49 ft (front of table)
+    const lengthLabel =
+      unit === 'm' ? 'Length: 1.07 m' : unit === 'ft' ? 'Length: 3.49 ft' : 'Length: 1065 mm';
+    const breadthLabel =
+      unit === 'm' ? 'Breadth: 0.58 m' : unit === 'ft' ? 'Breadth: 1.90 ft' : 'Breadth: 580 mm';
+    const heightLabel =
+      unit === 'm' ? 'Height: 0.75 m' : unit === 'ft' ? 'Height: 2.46 ft' : 'Height: 750 mm';
+
+    // Table length along X: 1065 mm (front of table)
     const p1 = new THREE.Vector3(tx - L / 2, H, tz + D / 2);
     const p2 = new THREE.Vector3(tx + L / 2, H, tz + D / 2);
     const lengthDim = createDimensionLine(
@@ -749,13 +759,13 @@ export class StallBuilder {
       p2,
       new THREE.Vector3(0, 0, 1),
       0.30, // 30cm outward toward viewer
-      unit === 'ft' ? 'Length: 3.49 ft' : 'Length: 1065 mm',
+      lengthLabel,
       0xfacc15,
       false
     );
     dimGroup.add(lengthDim);
 
-    // Table depth/breadth along Z: 580 mm -> 1.90 ft (right side of table)
+    // Table depth/breadth along Z: 580 mm (right side of table)
     const pd1 = new THREE.Vector3(tx + L / 2, H, tz + D / 2);
     const pd2 = new THREE.Vector3(tx + L / 2, H, tz - D / 2);
     const depthDim = createDimensionLine(
@@ -763,13 +773,13 @@ export class StallBuilder {
       pd2,
       new THREE.Vector3(1, 0, 0),
       0.30, // 30cm rightward
-      unit === 'ft' ? 'Breadth: 1.90 ft' : 'Breadth: 580 mm',
+      breadthLabel,
       0xfacc15,
       false
     );
     dimGroup.add(depthDim);
 
-    // Table height along Y: 750 mm -> 2.46 ft (left side of table)
+    // Table height along Y: 750 mm (left side of table)
     const ph1 = new THREE.Vector3(tx - L / 2, 0, tz + D / 2);
     const ph2 = new THREE.Vector3(tx - L / 2, H, tz + D / 2);
     const heightDim = createDimensionLine(
@@ -777,7 +787,7 @@ export class StallBuilder {
       ph2,
       new THREE.Vector3(-1, 0, 0),
       0.28, // 28cm leftward
-      unit === 'ft' ? 'Height: 2.46 ft' : 'Height: 750 mm',
+      heightLabel,
       0xfacc15,
       false
     );

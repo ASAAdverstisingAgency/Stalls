@@ -15,6 +15,7 @@ export class StallScene {
   private stallGroup: THREE.Group | null = null;
   private animationFrameId: number | null = null;
   private currentConfig: StallConfig;
+  private resizeObserver: ResizeObserver | null = null;
 
   // Smooth camera animation target state
   private isAnimatingCamera = false;
@@ -30,7 +31,7 @@ export class StallScene {
 
     // 1. Scene setup
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(0xf1f5f9); // Clean studio background
+    this.scene.background = new THREE.Color(0xf7f8fa); // Soft studio backdrop matching UI chrome
 
     // 2. Camera setup - set near plane to 0.3 to maximize depth buffer precision and prevent z-fighting
     const aspect = container.clientWidth / container.clientHeight;
@@ -72,8 +73,12 @@ export class StallScene {
     this.stallBuilder = new StallBuilder(config);
     this.buildScene();
 
-    // 8. Event listeners & Loop
+    // 8. Event listeners & Loop — observe container for mobile/tablet layout changes
     window.addEventListener('resize', this.onWindowResize);
+    if (typeof ResizeObserver !== 'undefined') {
+      this.resizeObserver = new ResizeObserver(() => this.onWindowResize());
+      this.resizeObserver.observe(container);
+    }
     this.animate();
   }
 
@@ -110,21 +115,21 @@ export class StallScene {
   }
 
   private setupStudioEnvironment() {
-    // Large circular studio podium placed cleanly below ground level
-    const podiumGeo = new THREE.CylinderGeometry(6, 6.2, 0.05, 64);
+    // Soft circular studio floor — light grey like the UI reference
+    const podiumGeo = new THREE.CylinderGeometry(7, 7.2, 0.04, 64);
     const podiumMat = new THREE.MeshStandardMaterial({
-      color: 0xe2e8f0,
-      roughness: 0.9,
-      metalness: 0.05,
+      color: 0xeef1f5,
+      roughness: 0.95,
+      metalness: 0.02,
     });
     const podium = new THREE.Mesh(podiumGeo, podiumMat);
-    podium.position.set(0, -0.03, 0);
+    podium.position.set(0, -0.025, 0);
     podium.receiveShadow = true;
     this.scene.add(podium);
 
-    // Subtle technical ground grid resting safely below the stall carpet
-    const gridHelper = new THREE.GridHelper(10, 20, 0x94a3b8, 0xcbd5e1);
-    gridHelper.position.set(0, -0.004, 0);
+    // Very light technical grid
+    const gridHelper = new THREE.GridHelper(12, 24, 0xd0d7e2, 0xe2e8f0);
+    gridHelper.position.set(0, -0.003, 0);
     this.scene.add(gridHelper);
   }
 
@@ -166,32 +171,39 @@ export class StallScene {
     this.camStartTarget.copy(this.controls.target);
 
     const targetH = 1.1;
+    // Scale framing with stall footprint (config is mm → meters)
+    const w = this.currentConfig.width / 1000;
+    const d = this.currentConfig.depth / 1000;
+    const span = Math.max(w, d, 2);
+    const side = Math.max(4.5, span * 1.35);
+    const elev = Math.max(1.4, span * 0.35);
+    const topH = Math.max(5.5, span * 1.55);
 
     switch (preset) {
       case 'front':
-        this.camEndPos.set(0, 1.4, 5.2);
+        this.camEndPos.set(0, elev, side);
         this.camEndTarget.set(0, targetH, 0);
         break;
       case 'back':
-        this.camEndPos.set(0, 1.8, -5.2);
+        this.camEndPos.set(0, elev + 0.3, -side);
         this.camEndTarget.set(0, targetH, 0);
         break;
       case 'left':
-        this.camEndPos.set(-5.2, 1.6, 0);
+        this.camEndPos.set(-side, elev + 0.15, 0);
         this.camEndTarget.set(0, targetH, 0);
         break;
       case 'right':
-        this.camEndPos.set(5.2, 1.6, 0);
+        this.camEndPos.set(side, elev + 0.15, 0);
         this.camEndTarget.set(0, targetH, 0);
         break;
       case 'top':
         // Top view: slight Z offset to prevent Gimbal lock / up vector singularity
-        this.camEndPos.set(0, 6.2, 0.05);
+        this.camEndPos.set(0, topH, 0.05);
         this.camEndTarget.set(0, 0, 0);
         break;
       case 'isometric':
       default:
-        this.camEndPos.set(4.2, 3.2, 5.0);
+        this.camEndPos.set(side * 0.85, elev * 1.8, side * 0.95);
         this.camEndTarget.set(0, targetH, 0);
         break;
     }
@@ -211,9 +223,12 @@ export class StallScene {
     if (!this.container) return;
     const width = this.container.clientWidth;
     const height = this.container.clientHeight;
+    if (width < 1 || height < 1) return;
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
-    this.renderer.setSize(width, height);
+    this.renderer.setSize(width, height, false);
+    this.renderer.domElement.style.width = '100%';
+    this.renderer.domElement.style.height = '100%';
   };
 
   /**
@@ -268,6 +283,8 @@ export class StallScene {
       cancelAnimationFrame(this.animationFrameId);
     }
     window.removeEventListener('resize', this.onWindowResize);
+    this.resizeObserver?.disconnect();
+    this.resizeObserver = null;
     this.controls.dispose();
     this.renderer.dispose();
     if (this.renderer.domElement.parentElement) {
