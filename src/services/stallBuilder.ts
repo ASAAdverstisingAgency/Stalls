@@ -185,12 +185,12 @@ export class StallBuilder {
       // Chairs behind table
       if (this.config.showChairs) {
         const chair1 = this.buildChair();
-        chair1.position.set(tableX - 0.35, 0, tableZ - 0.48);
+        chair1.position.set(tableX - 0.35, 0, tableZ - 0.52);
         chair1.rotation.y = 0; // facing front/table
         root.add(chair1);
 
         const chair2 = this.buildChair();
-        chair2.position.set(tableX + 0.35, 0, tableZ - 0.48);
+        chair2.position.set(tableX + 0.35, 0, tableZ - 0.52);
         chair2.rotation.y = 0;
         root.add(chair2);
       }
@@ -332,11 +332,10 @@ export class StallBuilder {
   }
 
   /**
-   * Realistic Octanorm Table:
-   * Dimensions:
-   * Length = 1065 mm (1.065 m)
-   * Breadth/Depth = 580 mm (0.58 m)
-   * Height = 750 mm (0.75 m)
+   * Realistic Octanorm Table (from exhibition desk reference):
+   * Length = 42 in = 1066.8 mm (1.0668 m)
+   * Breadth/Depth = 24 in = 609.6 mm (0.6096 m)
+   * Height = 30 in = 762 mm (0.762 m)
    * - White rectangular tabletop with silver-grey rounded edge trim
    * - White side and front panels
    * - Vertical aluminium corner profiles
@@ -346,9 +345,9 @@ export class StallBuilder {
     const table = new THREE.Group();
     table.name = 'OctanormTable';
 
-    const L = 1.065; // 1065 mm
-    const D = 0.580; // 580 mm
-    const H = 0.750; // 750 mm
+    const L = 42 * 0.0254; // 42 in → 1.0668 m
+    const D = 24 * 0.0254; // 24 in → 0.6096 m
+    const H = 30 * 0.0254; // 30 in → 0.762 m
     const topThick = 0.028; // 28 mm tabletop
     const profileSize = 0.035; // 35 mm octanorm profile
 
@@ -506,13 +505,14 @@ export class StallBuilder {
   }
 
   /**
-   * 3 Spotlights attached to upper frame/fascia pointing inwards onto table & display
+   * Spotlights on the front fascia — one light per metre / panel of stall width
+   * e.g. 3×3 → 3 lights, 2×2 → 2 lights, 4×3 → 4 lights
    */
   public buildSpotlights(w: number, h: number, d: number): THREE.Group {
     const group = new THREE.Group();
     group.name = 'Spotlights';
 
-    const numSpots = 3;
+    const numSpots = Math.max(1, Math.round(w));
     const spacing = w / (numSpots + 1);
 
     for (let i = 1; i <= numSpots; i++) {
@@ -546,13 +546,13 @@ export class StallBuilder {
 
       // Light bulb emitter
       const bulbGeo = new THREE.SphereGeometry(0.022, 12, 12);
-      const bulbMat = new THREE.MeshBasicMaterial({ color: 0xfff4e6 });
+      const bulbMat = new THREE.MeshBasicMaterial({ color: 0xfffaf0 });
       const bulb = new THREE.Mesh(bulbGeo, bulbMat);
       bulb.position.set(0, -0.14, -0.13);
       singleSpot.add(bulb);
 
       // Actual Three.js spotlight illuminating display interior
-      const light = new THREE.SpotLight(0xfff8ee, 2.2, 5.0, Math.PI / 4.5, 0.4, 1.2);
+      const light = new THREE.SpotLight(0xfff8ee, 3.6, 6.0, Math.PI / 4.2, 0.35, 1.0);
       light.position.set(spotX, spotY - 0.15, spotZ - 0.15);
       light.target.position.set(spotX * 0.5, 0.75, 0.5);
       group.add(light.target);
@@ -731,63 +731,63 @@ export class StallBuilder {
   }
 
   /**
-   * Furniture Dimensions:
-   * - Table length: 1065 mm (~3.5 ft)
-   * - Table depth: 580 mm (~1.9 ft)
-   * - Table height: 750 mm (~2.46 ft)
+   * Furniture Dimensions (42" × 24" × 30"):
+   * - Table length: 1066.8 mm (42 in)
+   * - Table depth: 609.6 mm (24 in)
+   * - Table height: 762 mm (30 in)
    */
   private buildFurnitureDimensions(tx: number, tz: number): THREE.Group {
     const dimGroup = new THREE.Group();
     dimGroup.name = 'FurnitureDimensionsGroup';
 
     const unit = this.config.dimensionUnit || 'ft';
-    const L = 1.065;
-    const D = 0.580;
-    const H = 0.750;
+    const L = 42 * 0.0254;
+    const D = 24 * 0.0254;
+    const H = 30 * 0.0254;
 
     const lengthLabel =
-      unit === 'm' ? 'Length: 1.07 m' : unit === 'ft' ? 'Length: 3.49 ft' : 'Length: 1065 mm';
+      unit === 'm' ? 'Length: 1.07 m' : unit === 'ft' ? 'Length: 42 in' : 'Length: 1067 mm';
     const breadthLabel =
-      unit === 'm' ? 'Breadth: 0.58 m' : unit === 'ft' ? 'Breadth: 1.90 ft' : 'Breadth: 580 mm';
+      unit === 'm' ? 'Breadth: 0.61 m' : unit === 'ft' ? 'Breadth: 24 in' : 'Breadth: 610 mm';
     const heightLabel =
-      unit === 'm' ? 'Height: 0.75 m' : unit === 'ft' ? 'Height: 2.46 ft' : 'Height: 750 mm';
+      unit === 'm' ? 'Height: 0.76 m' : unit === 'ft' ? 'Height: 30 in' : 'Height: 762 mm';
 
-    // Table length along X: 1065 mm (front of table)
+    // Table length along X: 42 in (front of table)
     const p1 = new THREE.Vector3(tx - L / 2, H, tz + D / 2);
     const p2 = new THREE.Vector3(tx + L / 2, H, tz + D / 2);
     const lengthDim = createDimensionLine(
       p1,
       p2,
       new THREE.Vector3(0, 0, 1),
-      0.30, // 30cm outward toward viewer
+      0.30,
       lengthLabel,
       0xfacc15,
       false
     );
     dimGroup.add(lengthDim);
 
-    // Table depth/breadth along Z: 580 mm (right side of table)
+    // Table depth/breadth along Z: 24 in (right side of table)
     const pd1 = new THREE.Vector3(tx + L / 2, H, tz + D / 2);
     const pd2 = new THREE.Vector3(tx + L / 2, H, tz - D / 2);
     const depthDim = createDimensionLine(
       pd1,
       pd2,
       new THREE.Vector3(1, 0, 0),
-      0.30, // 30cm rightward
+      0.30,
       breadthLabel,
       0xfacc15,
       false
     );
     dimGroup.add(depthDim);
 
-    // Table height along Y: 750 mm (left side of table)
+    // Table height along Y: 30 in (left side of table)
     const ph1 = new THREE.Vector3(tx - L / 2, 0, tz + D / 2);
     const ph2 = new THREE.Vector3(tx - L / 2, H, tz + D / 2);
     const heightDim = createDimensionLine(
       ph1,
       ph2,
       new THREE.Vector3(-1, 0, 0),
-      0.28, // 28cm leftward
+      0.28,
       heightLabel,
       0xfacc15,
       false

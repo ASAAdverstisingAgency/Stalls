@@ -56,7 +56,7 @@ export const SpecificationModal: React.FC<Props> = ({
     },
     {
       component: 'Display table',
-      specification: config.showTable ? '1 included' : 'None',
+      specification: config.showTable ? '1 included · 42 × 24 × 30 in' : 'None',
     },
     {
       component: 'Visitor seating',
@@ -65,7 +65,7 @@ export const SpecificationModal: React.FC<Props> = ({
     {
       component: 'Fascia spotlights',
       specification: config.showSpotlights
-        ? '3 track/clamp exhibition spotlights (warm white)'
+        ? `${Math.max(1, Math.round(widthM))} track/clamp exhibition spotlight${Math.round(widthM) === 1 ? '' : 's'} (warm white)`
         : 'None',
     },
     {
