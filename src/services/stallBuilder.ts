@@ -106,19 +106,20 @@ export class StallBuilder {
     });
 
     // Subdivided Modular Walls: Rear, Left, Right (Front is open entrance)
-    // Octanorm standard panel width is ~950mm - 1000mm.
-    // In a 3m wall, typically 3 equal bays (each ~1m wide).
-    const bays = 3;
-    const rearWallGroup = this.buildPartitionWall(w, h, bays, 'rear');
+    // 1 panel per metre — e.g. 6×5 m → 6 rear panels, 5 side panels
+    const widthBays = Math.max(1, Math.round(w));
+    const depthBays = Math.max(1, Math.round(d));
+
+    const rearWallGroup = this.buildPartitionWall(w, h, widthBays, 'rear');
     rearWallGroup.position.set(0, 0, -d / 2);
     root.add(rearWallGroup);
 
-    const leftWallGroup = this.buildPartitionWall(d, h, bays, 'left');
+    const leftWallGroup = this.buildPartitionWall(d, h, depthBays, 'left');
     leftWallGroup.rotation.y = Math.PI / 2;
     leftWallGroup.position.set(-w / 2, 0, 0);
     root.add(leftWallGroup);
 
-    const rightWallGroup = this.buildPartitionWall(d, h, bays, 'right');
+    const rightWallGroup = this.buildPartitionWall(d, h, depthBays, 'right');
     rightWallGroup.rotation.y = -Math.PI / 2;
     rightWallGroup.position.set(w / 2, 0, 0);
     root.add(rightWallGroup);
