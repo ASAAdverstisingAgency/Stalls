@@ -67,6 +67,16 @@ export const STALL_SIZE_PRESETS: StallSizePreset[] = [
   { id: '6x5', label: '6 × 5 Mtr.', tabLabel: '6×5 Mtr.', widthM: 6, depthM: 5, panelColor: '#E26B0A' },
 ];
 
+/** Size selected on first load / hard refresh — first tab (3 × 2 m) */
+export const DEFAULT_STALL_SIZE_ID = '3x2';
+
+export function getStallSizePreset(id: string): StallSizePreset {
+  return (
+    STALL_SIZE_PRESETS.find((p) => p.id === id) ||
+    STALL_SIZE_PRESETS.find((p) => p.id === DEFAULT_STALL_SIZE_ID)!
+  );
+}
+
 export function applyStallSizePreset(
   config: StallConfig,
   preset: StallSizePreset
@@ -87,42 +97,44 @@ export function applyStallSizePreset(
   };
 }
 
+const BASE_CONFIG: StallConfig = {
+  stallSizeId: DEFAULT_STALL_SIZE_ID,
+  width: 3000,
+  depth: 2000,
+  height: 2400,
+
+  fasciaType: 'front',
+  fasciaHeight: 228.6,
+  fasciaColor: '#ffffff',
+  brandingText: 'FMCG EXPO 2027',
+  brandingLogoUrl: null,
+  textColor: '#1e293b',
+
+  carpetColor: '#b91c1c',
+  frameFinish: 'silver',
+  panelColor: '#8B864E',
+  panelFinish: DEFAULT_STALL_SIZE_ID,
+
+  showTable: true,
+  showChairs: true,
+  showSocket: true,
+  showDustbin: true,
+  showSpotlights: true,
+
+  tablePositionX: 0,
+  tablePositionZ: 500,
+  socketWall: 'rear',
+  socketPositionX: 700,
+  socketHeightY: 450,
+
+  showDimensions: true,
+  showFurnitureDimensions: true,
+  dimensionUnit: 'm',
+};
+
 export const DEFAULT_CONFIG: StallConfig = applyStallSizePreset(
-  {
-    stallSizeId: '3x3',
-    width: 3000,
-    depth: 3000,
-    height: 2400,
-
-    fasciaType: 'front',
-    fasciaHeight: 228.6,
-    fasciaColor: '#ffffff',
-    brandingText: 'FMCG EXPO 2027',
-    brandingLogoUrl: null,
-    textColor: '#1e293b',
-
-    carpetColor: '#b91c1c',
-    frameFinish: 'silver',
-    panelColor: '#0070C0',
-    panelFinish: '3x3',
-
-    showTable: true,
-    showChairs: true,
-    showSocket: true,
-    showDustbin: true,
-    showSpotlights: true,
-
-    tablePositionX: 0,
-    tablePositionZ: 500,
-    socketWall: 'rear',
-    socketPositionX: 700,
-    socketHeightY: 450,
-
-    showDimensions: true,
-    showFurnitureDimensions: true,
-    dimensionUnit: 'm',
-  },
-  STALL_SIZE_PRESETS.find((p) => p.id === '3x3')!
+  BASE_CONFIG,
+  getStallSizePreset(DEFAULT_STALL_SIZE_ID)
 );
 
 export const COLOR_PALETTES = {

@@ -2,8 +2,9 @@ import React, { useEffect, useRef, useState, useCallback } from 'react';
 import type { StallConfig, StallSizePreset } from './types/config';
 import {
   DEFAULT_CONFIG,
-  STALL_SIZE_PRESETS,
+  DEFAULT_STALL_SIZE_ID,
   applyStallSizePreset,
+  getStallSizePreset,
 } from './types/config';
 import type { CameraPreset } from './services/stallScene';
 import { StallScene } from './services/stallScene';
@@ -13,14 +14,15 @@ import { SizeTabs } from './components/SizeTabs';
 import { Box, FileText, Mouse } from 'lucide-react';
 
 function getInitialConfig(): StallConfig {
-  const preset =
-    STALL_SIZE_PRESETS.find((p) => p.id === DEFAULT_CONFIG.stallSizeId) ||
-    STALL_SIZE_PRESETS[1];
-  return applyStallSizePreset({ ...DEFAULT_CONFIG }, preset);
+  // Boot on the first size tab (3 × 2 m)
+  return applyStallSizePreset(
+    { ...DEFAULT_CONFIG },
+    getStallSizePreset(DEFAULT_STALL_SIZE_ID)
+  );
 }
 
 export const App: React.FC = () => {
-  const [config, setConfig] = useState<StallConfig>(getInitialConfig);
+  const [config, setConfig] = useState<StallConfig>(() => getInitialConfig());
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isSpecsOpen, setIsSpecsOpen] = useState(false);
   const [capturedPreview, setCapturedPreview] = useState<string | null>(null);
@@ -104,40 +106,54 @@ export const App: React.FC = () => {
   const widthM = config.width / 1000;
   const depthM = config.depth / 1000;
 
+  const specsButton = (
+    <button type="button" className="btn-primary" onClick={handleOpenSpecs} title="Specifications">
+      <FileText size={15} />
+      <span className="btn-label-full">Specifications</span>
+      <span className="btn-label-short">Specs</span>
+    </button>
+  );
+
+  const sizeChip = <div className="chip chip-size">{widthM} × {depthM} m</div>;
+
+  const colorChip = (
+    <div className="chip chip-color">
+      <span
+        className="chip-swatch"
+        style={{ backgroundColor: config.panelColor }}
+        title="Panel colour"
+      />
+      <span className="chip-mono">{config.panelColor.toUpperCase()}</span>
+    </div>
+  );
+
   return (
     <div ref={appContainerRef} className="app-shell">
-      {/* Unified white top chrome (header + size tabs) */}
       <div className="app-top">
         <header className="app-header">
           <div className="app-brand">
             <div className="app-logo" aria-hidden>
               <Box size={19} strokeWidth={2.4} />
             </div>
-            <div>
+            <div className="app-brand-text">
               <div className="app-title">FMCG EXPO 2027 Floor Plan 3D</div>
               <div className="app-subtitle">Interactive 3D configurator</div>
             </div>
           </div>
 
-          <div className="app-header-actions">
-            <div className="chip chip-size">{widthM} × {depthM} m</div>
-
-            <div className="chip chip-color">
-              <span
-                className="chip-swatch"
-                style={{ backgroundColor: config.panelColor }}
-                title="Panel colour"
-              />
-              <span className="chip-mono">{config.panelColor.toUpperCase()}</span>
-            </div>
-
-            <button type="button" className="btn-primary" onClick={handleOpenSpecs} title="Specifications">
-              <FileText size={15} />
-              <span className="btn-label-full">Specifications</span>
-              <span className="btn-label-short">Specs</span>
-            </button>
+          <div className="app-header-actions app-header-actions-desktop">
+            {sizeChip}
+            {colorChip}
+            {specsButton}
           </div>
         </header>
+
+        {/* Mobile-only summary row (layout from mockup; keeps live app text/values) */}
+        <div className="mobile-meta">
+          {sizeChip}
+          {colorChip}
+          {specsButton}
+        </div>
 
         <SizeTabs activeId={config.stallSizeId} onSelect={handleSizeSelect} />
       </div>
@@ -150,7 +166,8 @@ export const App: React.FC = () => {
             Drag to rotate • Scroll to zoom • Two-finger to pan
           </span>
           <span className="preview-help preview-help-short">
-            Drag · Zoom · Pan
+            <Mouse size={13} strokeWidth={2} />
+            Drag to rotate • Pinch to zoom • Two-finger pan
           </span>
         </div>
 

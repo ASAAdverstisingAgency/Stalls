@@ -59,13 +59,13 @@ export const BottomToolbar: React.FC<Props> = ({
 
   return (
     <div className="toolbar">
-      <div className="toolbar-group no-scrollbar">
+      <div className="toolbar-views no-scrollbar">
         {presets.map((p) => (
           <button
             key={p.id}
             type="button"
             onClick={() => handlePreset(p.id)}
-            className={`toolbar-btn${activePreset === p.id ? ' is-active' : ''}`}
+            className={`toolbar-btn toolbar-view-btn${activePreset === p.id ? ' is-active' : ''}`}
           >
             {p.icon}
             <span className="toolbar-label toolbar-label-full">{p.label}</span>
@@ -74,9 +74,9 @@ export const BottomToolbar: React.FC<Props> = ({
         ))}
       </div>
 
-      <span className="toolbar-divider" />
+      <span className="toolbar-divider" aria-hidden />
 
-      <div className="toolbar-group">
+      <div className="toolbar-utils">
         <button
           type="button"
           onClick={onToggleDimensions}
@@ -119,7 +119,7 @@ export const BottomToolbar: React.FC<Props> = ({
           type="button"
           onClick={onCapture}
           title="Capture View"
-          className="toolbar-btn toolbar-btn-icon"
+          className="toolbar-btn toolbar-btn-icon toolbar-capture"
         >
           <Camera />
         </button>

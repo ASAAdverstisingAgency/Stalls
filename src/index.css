@@ -305,6 +305,10 @@ button {
 
 /* ═══════════ Toolbar ═══════════ */
 
+.mobile-meta {
+  display: none;
+}
+
 .toolbar {
   position: absolute;
   bottom: max(16px, env(safe-area-inset-bottom, 0px));
@@ -325,7 +329,8 @@ button {
   backdrop-filter: blur(8px);
 }
 
-.toolbar-group {
+.toolbar-views,
+.toolbar-utils {
   display: flex;
   align-items: center;
   gap: 2px;
@@ -799,198 +804,276 @@ button {
   .toolbar-label-short { display: inline; }
 }
 
-/* ----- Tablet ----- */
-@media (max-width: 900px) {
+/* ----- Tablet (still floating toolbar) ----- */
+@media (max-width: 900px) and (min-width: 769px) {
   .app-header {
     height: 58px;
     padding: 0 14px;
     gap: 10px;
   }
   .app-logo { width: 36px; height: 36px; }
-  .app-logo svg { width: 16px; height: 16px; }
   .app-title { font-size: 14px; max-width: 42vw; }
   .app-subtitle { font-size: 11px; }
-  .app-header-actions { gap: 8px; }
   .chip-size { display: none; }
 
-  .size-bar {
-    padding: 10px 14px 12px;
-    gap: 10px;
-  }
-  .size-bar-label {
-    font-size: 10px;
-    letter-spacing: 0.08em;
-  }
-  .size-tab {
-    height: 36px;
-    padding: 0 12px;
-    font-size: 12.5px;
-    gap: 6px;
-  }
-  .size-tab-check { width: 16px; height: 16px; }
+  .size-bar { padding: 10px 14px 12px; gap: 10px; }
+  .size-tab { height: 36px; padding: 0 12px; font-size: 12.5px; }
 
-  .viewport-hint {
-    top: 10px;
-    left: 12px;
-    right: 12px;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
+  .viewport-hint { top: 10px; left: 12px; }
   .preview-help-full { display: none; }
   .preview-help-short { display: inline-flex; }
-  .preview-badge {
-    height: 24px;
-    font-size: 9px;
-    padding: 0 8px;
-  }
 
   .toolbar {
     bottom: max(12px, env(safe-area-inset-bottom, 0px));
-    padding: 6px;
     max-width: calc(100% - 16px);
-    border-radius: 14px;
   }
-  .toolbar-divider { margin: 0 4px; height: 24px; }
-  .toolbar-btn {
-    height: 34px;
-    padding: 0 9px;
-    font-size: 11.5px;
-    gap: 5px;
-  }
-  .toolbar-btn-icon { width: 34px; }
-  .toolbar-btn svg { width: 14px; height: 14px; }
+  .toolbar-btn { height: 34px; padding: 0 9px; font-size: 11.5px; }
 
   .spec-backdrop { padding: 12px; }
-  .spec-modal {
-    max-height: 94vh;
-    max-height: 94dvh;
-    border-radius: 14px;
-  }
-  .spec-top-grid {
-    grid-template-columns: 1fr;
-    gap: 14px;
-  }
-  .spec-preview { min-height: 180px; }
-  .spec-preview img { max-height: 220px; }
-  .spec-stall-name { font-size: 17px; }
-  .spec-header,
-  .spec-body,
-  .spec-footer {
-    padding-left: 16px;
-    padding-right: 16px;
-  }
-  .spec-header { padding-top: 16px; padding-bottom: 12px; }
-  .spec-footer {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 12px;
-  }
-  .spec-footer-actions {
-    width: 100%;
-    justify-content: stretch;
-  }
+  .spec-top-grid { grid-template-columns: 1fr; }
+  .spec-footer { flex-direction: column; align-items: stretch; }
+  .spec-footer-actions { width: 100%; }
   .spec-footer-actions .spec-btn-secondary,
-  .spec-footer-actions .spec-btn-primary {
-    flex: 1;
-    justify-content: center;
-  }
-  .spec-note { max-width: none; }
+  .spec-footer-actions .spec-btn-primary { flex: 1; justify-content: center; }
+  .spec-header, .spec-body, .spec-footer { padding-left: 16px; padding-right: 16px; }
 }
 
-/* ----- Large phone / small tablet ----- */
-@media (max-width: 640px) {
-  .app-subtitle { display: none; }
-  .chip-color { display: none; }
-  .btn-label-full { display: none; }
-  .btn-label-short { display: inline; }
-  .btn-primary {
-    height: 34px;
+/* ═══════════════════════════════════════════════════════════
+   MOBILE LAYOUT (matches mockup structure, keeps app copy)
+   ≤768px: stacked chrome · size grid · canvas · view grid · utils
+   ═══════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .app-shell {
+    background: #fff;
+  }
+
+  .app-top {
+    box-shadow: none;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .app-header {
+    height: auto;
+    min-height: 56px;
+    padding: 12px 14px 8px;
+    gap: 10px;
+  }
+
+  .app-header-actions-desktop {
+    display: none !important;
+  }
+
+  .app-logo {
+    width: 36px;
+    height: 36px;
+  }
+
+  .app-title {
+    font-size: 15px;
+    max-width: none;
+    white-space: normal;
+    line-height: 1.2;
+  }
+
+  .app-subtitle {
+    display: block;
+    font-size: 11.5px;
+    margin-top: 2px;
+  }
+
+  /* Summary row: size · colour · Specs */
+  .mobile-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 14px 12px;
+  }
+
+  .mobile-meta .chip {
+    display: inline-flex;
+    height: 36px;
+    padding: 0 10px;
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+
+  .mobile-meta .chip-color {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .mobile-meta .btn-primary {
+    height: 36px;
     padding: 0 12px;
     font-size: 12px;
+    margin-left: auto;
+    flex-shrink: 0;
   }
 
+  .mobile-meta .btn-label-full { display: inline; }
+  .mobile-meta .btn-label-short { display: none; }
+
+  /* Stall size as wrapping grid */
   .size-bar {
+    display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-    padding: 8px 12px 10px;
+    align-items: stretch;
+    gap: 10px;
+    padding: 4px 14px 14px;
+    overflow: visible;
   }
+
+  .size-bar-label {
+    display: block;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+  }
+
   .size-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
     width: 100%;
-    overflow-x: auto;
-    padding-bottom: 2px;
+    overflow: visible;
   }
 
-  .toolbar-label-full,
-  .toolbar-label-short { display: none; }
-  .toolbar-btn { padding: 0 8px; }
-  .toolbar-divider { display: none; }
-
-  .spec-cards { gap: 8px; }
-  .spec-card { padding: 10px; gap: 8px; }
-  .spec-card-icon,
-  .spec-card-swatch { width: 30px; height: 30px; border-radius: 8px; }
-  .spec-card-value { font-size: 12.5px; }
-  .spec-table-head,
-  .spec-table-row {
-    grid-template-columns: 1fr;
-    gap: 3px;
-    padding: 10px 12px;
-  }
-}
-
-/* ----- Phone ----- */
-@media (max-width: 480px) {
-  .app-header {
-    height: 52px;
-    padding: 0 10px;
-  }
-  .app-brand { gap: 8px; }
-  .app-logo { width: 32px; height: 32px; }
-  .app-title { font-size: 12.5px; max-width: 48vw; }
-  .chip { display: none; }
-
-  .size-bar-label { display: none; }
   .size-tab {
-    height: 34px;
-    padding: 0 10px;
-    font-size: 12px;
-    border-radius: 8px;
+    flex: 1 1 calc(33.333% - 6px);
+    min-width: calc(33.333% - 6px);
+    max-width: calc(50% - 4px);
+    height: 40px;
+    padding: 0 8px;
+    font-size: 12.5px;
+    justify-content: center;
+    border-radius: 10px;
+  }
+
+  /* Viewport column: hint + canvas + docked controls */
+  .viewport {
+    display: flex;
+    flex-direction: column;
+    background: var(--bg);
+    min-height: 0;
   }
 
   .viewport-hint {
-    top: 8px;
-    left: 8px;
-    right: 8px;
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    z-index: 1;
+    flex-shrink: 0;
+    padding: 10px 14px;
+    background: #f3f6fa;
+    border-bottom: 1px solid var(--border);
+    gap: 10px;
+    flex-wrap: wrap;
   }
-  .preview-help-short { font-size: 11px; }
 
-  .toolbar {
-    width: calc(100% - 12px);
-    max-width: none;
-    bottom: max(8px, env(safe-area-inset-bottom, 0px));
-    padding: 5px;
-    gap: 1px;
+  .preview-help-full { display: none; }
+  .preview-help-short {
+    display: inline-flex;
+    font-size: 11.5px;
+    color: var(--navy-soft);
   }
-  .toolbar-group {
-    justify-content: center;
+
+  .preview-badge {
+    height: 26px;
+    font-size: 10px;
+    padding: 0 10px;
+  }
+
+  .viewport-canvas {
+    flex: 1 1 auto;
+    min-height: 220px;
     width: 100%;
   }
-  .toolbar-btn {
-    height: 32px;
-    min-width: 32px;
-    padding: 0 6px;
-    border-radius: 9px;
-  }
-  .toggle-track { width: 30px; height: 16px; }
-  .toggle-thumb { width: 12px; height: 12px; }
-  .toggle-track.is-on .toggle-thumb { transform: translateX(14px); }
-  .unit-chip { height: 24px; padding: 0 6px; font-size: 9px; }
 
-  .spec-backdrop {
-    padding: 0;
+  /* Docked panel under 3D — view grid + utility row */
+  .toolbar {
+    position: relative;
+    left: auto;
+    bottom: auto;
+    transform: none;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    border-radius: 0;
+    border: none;
+    border-top: 1px solid var(--border);
+    box-shadow: none;
+    background: #fff;
+    backdrop-filter: none;
+    flex-direction: column;
     align-items: stretch;
+    gap: 0;
+    padding: 0;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    z-index: 20;
   }
+
+  .toolbar-divider { display: none; }
+
+  .toolbar-views {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    width: 100%;
+    padding: 12px 12px 10px;
+    overflow: visible;
+  }
+
+  .toolbar-view-btn {
+    height: 44px;
+    width: 100%;
+    justify-content: center;
+    padding: 0 6px;
+    border-radius: 10px;
+    border: 1px solid var(--border-strong);
+    background: #fff;
+    font-size: 11.5px;
+    gap: 5px;
+  }
+
+  .toolbar-view-btn.is-active {
+    border-color: var(--blue);
+  }
+
+  .toolbar-view-btn .toolbar-label-full { display: none; }
+  .toolbar-view-btn .toolbar-label-short { display: inline; }
+  .toolbar-view-btn svg { width: 15px; height: 15px; }
+
+  .toolbar-utils {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px;
+    width: 100%;
+    padding: 8px 10px 12px;
+    border-top: 1px solid var(--border);
+    overflow: visible;
+  }
+
+  .toolbar-utils .toolbar-btn {
+    height: 40px;
+    padding: 0 10px;
+    font-size: 12px;
+  }
+
+  .toolbar-utils .toolbar-label {
+    display: inline;
+  }
+
+  .toolbar-utils .toolbar-label-full,
+  .toolbar-utils .toolbar-label-short {
+    display: inline;
+  }
+
+  .toolbar-capture {
+    display: inline-flex;
+  }
+
+  .spec-backdrop { padding: 0; align-items: stretch; }
   .spec-modal {
     max-width: none;
     max-height: none;
@@ -999,40 +1082,51 @@ button {
     border-radius: 0;
     border: none;
   }
-  .spec-header-icon { width: 36px; height: 36px; border-radius: 10px; }
-  .spec-title { font-size: 16px; }
-  .spec-subtitle { font-size: 12px; }
-  .spec-preview { min-height: 160px; border-radius: 12px; }
-  .spec-stall-name { font-size: 16px; }
+  .spec-top-grid { grid-template-columns: 1fr; gap: 14px; }
+  .spec-header, .spec-body, .spec-footer { padding-left: 16px; padding-right: 16px; }
   .spec-footer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
     padding-bottom: max(12px, env(safe-area-inset-bottom, 0px));
   }
-  .spec-footer-actions {
-    flex-direction: column;
-  }
+  .spec-footer-actions { width: 100%; }
   .spec-footer-actions .spec-btn-secondary,
   .spec-footer-actions .spec-btn-primary {
-    width: 100%;
-    height: 42px;
+    flex: 1;
+    justify-content: center;
+  }
+  .spec-table-head,
+  .spec-table-row {
+    grid-template-columns: 1fr;
+    gap: 3px;
   }
 }
 
-/* Landscape phones — keep chrome compact so 3D stays usable */
-@media (max-height: 500px) and (orientation: landscape) {
-  .app-header { height: 44px; }
-  .app-subtitle,
-  .chip-color,
-  .chip-size { display: none; }
-  .size-bar { padding: 6px 12px; }
-  .size-tab { height: 30px; font-size: 11px; }
-  .viewport-hint { display: none; }
-  .toolbar {
-    bottom: 6px;
-    padding: 4px;
+/* Narrow phones — tighten size grid & meta */
+@media (max-width: 400px) {
+  .mobile-meta .btn-label-full { display: none; }
+  .mobile-meta .btn-label-short { display: inline; }
+  .app-title { font-size: 13.5px; }
+  .size-tab {
+    flex: 1 1 calc(50% - 4px);
+    min-width: calc(50% - 4px);
+    max-width: none;
+    font-size: 12px;
+    height: 38px;
   }
-  .toolbar-btn { height: 28px; }
-  .spec-preview { min-height: 120px; }
-  .spec-preview img { max-height: 140px; }
+  .toolbar-view-btn .toolbar-label-short { font-size: 11px; }
+}
+
+/* Landscape phones — compact stacked chrome */
+@media (max-height: 500px) and (orientation: landscape) and (max-width: 900px) {
+  .app-subtitle { display: none; }
+  .size-bar { padding: 6px 12px 8px; }
+  .size-tab { height: 32px; font-size: 11px; }
+  .viewport-hint { padding: 6px 12px; }
+  .toolbar-views { padding: 8px; gap: 6px; }
+  .toolbar-view-btn { height: 36px; }
+  .toolbar-utils { padding: 6px 8px 8px; }
 }
 
 @media print {
