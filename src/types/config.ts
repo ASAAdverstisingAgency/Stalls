@@ -58,13 +58,13 @@ export interface StallSizePreset {
  * Dimensions are in meters; converted to mm when applied to StallConfig.
  */
 export const STALL_SIZE_PRESETS: StallSizePreset[] = [
-  { id: '3x2', label: '3 × 2 Mtr.', tabLabel: '3×2 Mtr.', widthM: 3, depthM: 2, panelColor: '#8B864E' },
-  { id: '3x3', label: '3 × 3 Mtr.', tabLabel: '3×3 Mtr.', widthM: 3, depthM: 3, panelColor: '#0070C0' },
-  { id: '2x2', label: '2 × 2 Mtr.', tabLabel: '2×2 Mtr.', widthM: 2, depthM: 2, panelColor: '#D99694' },
-  { id: '4x2', label: '4 × 2 Mtr.', tabLabel: '4×2 Mtr.', widthM: 4, depthM: 2, panelColor: '#B7DDE8' },
-  { id: '4x3', label: '4 × 3 Mtr.', tabLabel: '4×3 Mtr.', widthM: 4, depthM: 3, panelColor: '#B1A0C7' },
-  { id: '6x6', label: '6 × 6 Mtr.', tabLabel: '6×6 Mtr.', widthM: 6, depthM: 6, panelColor: '#FFC000' },
-  { id: '6x5', label: '6 × 5 Mtr.', tabLabel: '6×5 Mtr.', widthM: 6, depthM: 5, panelColor: '#E26B0A' },
+  { id: '3x2', label: '3 × 2 Mtr.', tabLabel: '3×2 Mtr.', widthM: 3, depthM: 2, panelColor: '#938A53' },
+  { id: '3x3', label: '3 × 3 Mtr.', tabLabel: '3×3 Mtr.', widthM: 3, depthM: 3, panelColor: '#006FC0' },
+  { id: '2x2', label: '2 × 2 Mtr.', tabLabel: '2×2 Mtr.', widthM: 2, depthM: 2, panelColor: '#DA9492' },
+  { id: '4x2', label: '4 × 2 Mtr.', tabLabel: '4×2 Mtr.', widthM: 4, depthM: 2, panelColor: '#B8DCE8' },
+  { id: '4x3', label: '4 × 3 Mtr.', tabLabel: '4×3 Mtr.', widthM: 4, depthM: 3, panelColor: '#B0A0C7' },
+  { id: '6x6', label: '6 × 6 Mtr.', tabLabel: '6×6 Mtr.', widthM: 6, depthM: 6, panelColor: '#FEC104' },
+  { id: '6x5', label: '6 × 5 Mtr.', tabLabel: '6×5 Mtr.', widthM: 6, depthM: 5, panelColor: '#E16B0B' },
 ];
 
 /** Size selected on first load / hard refresh — first tab (3 × 2 m) */
@@ -112,7 +112,7 @@ const BASE_CONFIG: StallConfig = {
 
   carpetColor: '#b91c1c',
   frameFinish: 'silver',
-  panelColor: '#8B864E',
+  panelColor: '#938A53',
   panelFinish: DEFAULT_STALL_SIZE_ID,
 
   showTable: true,
